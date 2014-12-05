@@ -1,15 +1,15 @@
 {
-  "name": "Contacts",
-  "description": "FxOS Contacts",
-  "type": "privileged",
-  "launch_path": "/index.html",
-  "developer": {
-    "name": "The Gaia Team",
-    "url": "https://github.com/fxos/"
-  },
-  "permissions": {
-  },
-  "icons": {
-    "128": "/icons/icon_128.png"
-  }
+	"name": "Contacts",
+	"description": "FxOS Contacts",
+	"type": "privileged",
+	"launch_path": "/index.html",
+	"developer": {
+		"name": "The Gaia Team",
+		"url": "https://github.com/fxos/"
+	},
+	"permissions": {
+	},
+	"icons": {
+		"128": "/icons/icon_128.png"
+	}
 }
