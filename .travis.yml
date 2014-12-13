@@ -1,0 +1,5 @@
+before_install:
+  - npm install -g gulp
+
+script:
+  - (cd node_modules/fxos-build/; gulp)
