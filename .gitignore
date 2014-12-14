@@ -1,2 +1,3 @@
 .jshintrc
+app/dist/
 node_modules/
