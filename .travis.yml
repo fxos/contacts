@@ -1,6 +1,6 @@
 before_install:
   - travis_retry npm install
 script:
-  - (cd node_modules/fxos-build/; ./node_modules/gulp/bin/gulp.js)
+  - make gulp travis
 notifications:
   email: false
