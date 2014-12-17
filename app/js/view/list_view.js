@@ -1,7 +1,6 @@
-import DetailController from 'dist/controller/detail_controller.js';
-
 export default class ListView {
-	constructor() {
+	constructor(controller) {
+		this.controller = controller;
 		this.element = document.body;
 		this.map = new WeakMap();
 		this.element.addEventListener('click', this.loadDetails.bind(this));
@@ -29,8 +28,7 @@ export default class ListView {
 		if (!contact) {
 			return;
 		}
-
-		var detailController = new DetailController(contact);
-		detailController.main();
+		// XXX: Some event?
+		this.controller.itemTapped(contact);
 	}
 }
