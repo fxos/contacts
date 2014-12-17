@@ -1,20 +1,4 @@
-var allContacts = navigator.mozContacts.getAll({
-	sortBy: 'familyName',
-	sortOrder: 'ascending'
-});
+import ListController from 'dist/controller/list_controller.js';
 
-allContacts.onsuccess = function(event) {
-	var cursor = event.target;
-	if (!cursor.result) {
-		return;
-	}
-	addContact(cursor.result);
-	cursor.continue();
-};
-
-function addContact(contact) {
-	var firstName = contact.givenName[0];
-	var lastName = contact.familyName[0];
-
-	document.body.innerHTML += `${firstName} ${lastName}<br>`;
-}
+var listController = new ListController();
+listController.main();
