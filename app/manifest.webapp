@@ -8,6 +8,7 @@
 		"url": "https://github.com/fxos/"
 	},
 	"permissions": {
+		"contacts":{ "access": "readwrite" }
 	},
 	"icons": {
 		"128": "/icons/icon_128.png"
