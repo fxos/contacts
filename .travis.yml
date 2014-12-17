@@ -1,6 +1,6 @@
 before_install:
   - travis_retry npm install
 script:
-  - make gulp action=travis
+  - gulp travis
 notifications:
   email: false

@@ -18,6 +18,7 @@
   },
   "devDependencies": {},
   "dependencies": {
-    "fxos-build": "*"
+    "fxos-build": "*",
+    "gulp": "3.8.x"
   }
 }
