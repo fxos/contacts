@@ -1,4 +1,5 @@
 gulpfile.js
+.editorconfig
 .jshintrc
 app/dist/
 node_modules/
