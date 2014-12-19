@@ -1,7 +1,7 @@
-import DetailController from 'dist/controller/detail_controller.js';
+import DetailController from 'js/controller/detail_controller.js';
 
-import ListModel from 'dist/model/list_model.js';
-import ListView from 'dist/view/list_view.js';
+import ListModel from 'js/model/list_model.js';
+import ListView from 'js/view/list_view.js';
 
 export default class ListController {
 	constructor() {

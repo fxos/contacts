@@ -1,4 +1,4 @@
-import DetailView from 'dist/view/detail_view.js';
+import DetailView from 'js/view/detail_view.js';
 
 export default class DetailController {
 	constructor(record) {
