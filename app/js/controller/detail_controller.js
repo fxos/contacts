@@ -1,12 +1,7 @@
-import DetailView from 'js/view/detail_view.js';
+import {Controller} from 'components/fxos-mvc/dist/mvc.js';
 
-export default class DetailController {
-	constructor(record) {
-		this.record = record;
-		this.view = new DetailView(record);
-	}
-
-	main() {
-		this.view.render(this.record);
-	}
+export default class DetailController extends Controller {
+  constructor(options) {
+    super(options);
+  }
 }

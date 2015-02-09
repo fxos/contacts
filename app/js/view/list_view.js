@@ -1,34 +1,15 @@
-export default class ListView {
-	constructor(controller) {
-		this.controller = controller;
-		this.element = document.body;
-		this.map = new WeakMap();
-		this.element.addEventListener('click', this.loadDetails.bind(this));
-	}
+import {View} from 'components/fxos-mvc/dist/mvc.js';
 
-	render(results) {
-		this.element.innerHTML = '';
+export default class ListView extends View {
+  constructor(params) {
+    super(params);
+  }
 
-		results.forEach(contact => {
-			var firstName = contact.givenName[0];
-			var lastName = contact.familyName[0];
+  init(controller) {
+    super(controller);
+  }
 
-			var element = document.createElement('div');
-			element.innerHTML = `
-				${firstName} ${lastName}
-			`;
-			this.map.set(element, contact);
-
-			this.element.appendChild(element);
-		});
-	}
-
-	loadDetails(e) {
-		var contact = this.map.get(e.target);
-		if (!contact) {
-			return;
-		}
-		// XXX: Some event?
-		this.controller.itemTapped(contact);
-	}
+  template() {
+    return `Hello World - List View`;
+  }
 }

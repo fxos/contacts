@@ -1,16 +1,15 @@
-export default class DetailView {
-	constructor(model) {
-		this.element = document.body;
-		this.model = model;
-	}
+import {View} from 'components/fxos-mvc/dist/mvc.js';
 
-	render() {
-		var firstName = this.model.givenName[0];
-		var lastName = this.model.familyName[0];
+export default class DetailView extends View {
+  constructor(params) {
+    super(params);
+  }
 
-		this.element.innerHTML = `
-			<h1>Contact Details</h1>
-			${firstName} ${lastName}
-		`;
-	}
+  init(controller) {
+    super(controller);
+  }
+
+  template() {
+    return `Hello World - Detail View`;
+  }
 }
