@@ -1,0 +1,15 @@
+{
+  "name": "fxos-contacts",
+  "description": "Cloud contacts.",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "app/components"
+  ],
+  "dependencies": {
+    "fxos-mvc": "git@github.com:fxos/mvc.git",
+    "gaia-header": "gaia-components/gaia-header",
+    "gaia-list": "gaia-components/gaia-list",
+    "gaia-button": "gaia-components/gaia-button"
+  }
+}
