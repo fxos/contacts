@@ -13,6 +13,7 @@
     "gaia-list": "gaia-components/gaia-list",
     "gaia-button": "gaia-components/gaia-button",
     "gaia-theme": "gaia-components/gaia-theme#~0.4.5",
-    "gaia-fonts": "gaia-components/gaia-fonts#~0.2.1"
+    "gaia-fonts": "gaia-components/gaia-fonts#~0.2.1",
+    "gaia-text-input": "gaia-components/gaia-text-input"
   }
 }

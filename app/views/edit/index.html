@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+    <title>Contacts: Edit</title>
+    <link rel="stylesheet" href="../../components/base/base.css">
+    <link rel="stylesheet" href="../../components/gaia-fonts/style.css">
+    <link rel="stylesheet" href="../../components/gaia-theme/gaia-theme.css">
+    <link rel="stylesheet" href="../../components/gaia-icons/gaia-icons.css">
+    <link rel="stylesheet" href="edit.css">
+    <script defer src="../../components/gaia-icons/gaia-icons.js"></script>
+    <script defer src="../../components/gaia-component/gaia-component.js"></script>
+    <script defer src="../../components/gaia-header/dist/gaia-header.js"></script>
+    <script defer src="../../components/gaia-text-input/gaia-text-input.js"></script>
+    <script defer src="edit.js"></script>
+  </head>
+  <body class="theme-communications">
+    <gaia-header>
+      <a class="action" href="../list" data-icon="back"></a>
+      <h1>Add Contact</h1>
+      <button class="save">Save</button>
+    </gaia-header>
+    <div class="content">
+      <gaia-text-input name="firstname" placeholder="First Name"></gaia-text-input>
+      <gaia-text-input name="lastname" placeholder="Last Name"></gaia-text-input>
+      <gaia-text-input name="email" type="email" placeholder="Email"></gaia-text-input>
+      <gaia-text-input name="phone" type="number" placeholder="Phone"></gaia-text-input>
+    </div>
+  </body>
+</html>
