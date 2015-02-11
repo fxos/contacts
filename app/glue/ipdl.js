@@ -1,6 +1,6 @@
 'use strict';
 
-importScripts('glue/ipdl_parser.js');
+importScripts('/glue/ipdl_parser.js');
 
 function IPDL(name) {
   var ast = parser.parse(this._getFileContent(name));
@@ -12,34 +12,37 @@ function IPDL(name) {
 }
 
 IPDL.prototype.getSide = function(sides) {
-  // XXX This is very weak...
-  var sideName = '';
+  var getSide = function(name) {
+    return sides.find(function(side) {
+      return name === side.name;
+    });
+  };
 
-  if (sideName === '') {
-    try {
-      window;
-      // XXX This stuff does not throw in our smartworker.
-      // Needs to understand the diff.
-      if (window !== undefined) {
-        sideName = 'window';
-      }
-    } catch(e) {}
-  }
+  try {
+    if (window !== undefined) {
+      return getSide('window');
+    }
+  } catch(e) {}
 
-  if (sideName === '') {
-    try {
-      postMessage;
-      sideName = 'worker';
-    } catch(e) {}
-  }
+  try {
+    if (self instanceof DedicatedWorkerGlobalScope) {
+      return getSide('worker');
+    }
+  } catch(e) {}
 
-  if (sideName === '') {
-    sideName = 'serviceworker';
-  }
+  try {
+    if (self instanceof SharedWorkerGlobalScope) {
+      return getSide('sharedworker');
+    }
+  } catch(e) {}
 
-  return sides.find(function(side) {
-    return sideName == side.name;
-  }, this);
+  try {
+    if (self instanceof ServiceWorkerGlobalScope) {
+      return getSide('serviceworker');
+    }
+  } catch(e) {}
+
+  return null;
 };
 
 IPDL.prototype.getOtherSide = function(sides) {
@@ -51,7 +54,7 @@ IPDL.prototype.getOtherSide = function(sides) {
 IPDL.prototype._getFileContent = function(name) {
   var xhr = new XMLHttpRequest();
   var filename =
-    'glue/ipdl/' +
+    '/glue/ipdl/' +
     'P' +
     name.charAt(0).toUpperCase() + name.slice(1) +
     '.ipdl';
