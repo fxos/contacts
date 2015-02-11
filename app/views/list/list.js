@@ -5,6 +5,23 @@ var debug = 0 ? console.log.bind(console, '[LIST]') : function(){};
 var channel = new BroadcastChannel('navigate');
 var isNested = window.parent !== window;
 
+var els = {
+  list: document.querySelector('gaia-list')
+};
+
+var database = {
+  1: {
+    firstName: 'Bill'
+  },
+
+  2: {
+    firstName: 'Bob'
+  },
+
+  3: {
+    firstName: 'Ben'
+  }
+};
 
 document.body.addEventListener('click', (e) => {
   if (!isNested) { return; }
@@ -19,5 +36,21 @@ document.body.addEventListener('click', (e) => {
   debug('link click', id);
   channel.postMessage(id);
 });
+
+render();
+
+function render() {
+  var frag = document.createDocumentFragment();
+
+  for (var id in database) {
+    var item = database[id];
+    var el = document.createElement('a');
+    el.textContent = item.firstName;
+    el.href = '../detail/#/' + id;
+    frag.appendChild(el);
+  }
+
+  els.list.appendChild(frag);
+}
 
 })();
