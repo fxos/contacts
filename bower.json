@@ -7,9 +7,12 @@
     "app/components"
   ],
   "dependencies": {
+    "requirejs": "https://raw.githubusercontent.com/jrburke/requirejs/2.1.14/require.js",
     "fxos-mvc": "git@github.com:fxos/mvc.git",
-    "gaia-header": "gaia-components/gaia-header",
+    "gaia-header": "gaia-components/gaia-header#~0.6.3",
     "gaia-list": "gaia-components/gaia-list",
-    "gaia-button": "gaia-components/gaia-button"
+    "gaia-button": "gaia-components/gaia-button",
+    "gaia-theme": "gaia-components/gaia-theme#~0.4.5",
+    "gaia-fonts": "gaia-components/gaia-fonts#~0.2.1"
   }
 }

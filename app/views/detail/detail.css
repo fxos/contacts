@@ -1,0 +1,28 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+iframe {
+  display: block;
+  width: 100%;
+}
+
+h1 {
+  font-size: 3em;
+  line-height: 1.15em
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
+.content {
+  padding: var(--base-s);
+}
