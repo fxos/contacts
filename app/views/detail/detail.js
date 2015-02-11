@@ -1,6 +1,7 @@
 (function() {
 
 var debug = 0 ? console.log.bind(console, '[LIST]') : function(){};
+var chromeless = !!~location.search.indexOf('chromeless');
 
 var els = {
   header: document.querySelector('gaia-header'),
@@ -22,20 +23,12 @@ var database = {
   }
 };
 
-var queryParams = parseQueryParams(location.search);
-
 // Setup
-setupHeaderAction(queryParams);
+els.header.hidden = chromeless;
 render();
 
 // Events
 addEventListener('hashchange', render);
-
-function setupHeaderAction(queryParams) {
-  debug('setup header action', queryParams);
-  var headerActionEnabled = queryParams['header-action'] !== 'false';
-  els.actionButton.hidden = !headerActionEnabled;
-}
 
 function getContactId() {
   return location.hash.slice(2);
@@ -48,20 +41,6 @@ function render() {
   debug('render', data, id);
   if (!data) { return; }
   els.firstName.textContent = data.firstName;
-}
-
-function parseQueryParams(string) {
-  string = string.replace('?', '');
-
-  var parts = string.split('&');
-  var params = {};
-
-  parts.forEach(part => {
-    var parts = part.split('=');
-    params[parts[0]] = parts[1];
-  });
-
-  return params;
 }
 
 })();

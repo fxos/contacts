@@ -4,7 +4,10 @@
 		<meta charset="utf-8">
 		<title>Contacts Desktop View</title>
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+		<link rel="stylesheet" href="../../components/base/base.css">
 		<link rel="stylesheet" href="components/gaia-theme/gaia-theme.css">
+		<link rel="stylesheet" href="../../components/gaia-fonts/style.css">
+		<script defer src="../../components/gaia-header/dist/gaia-header.js"></script>
 		<script defer src="index.js"></script>
 		<style>
 
@@ -29,7 +32,13 @@
 
 			body {
 				display: flex;
+				flex-direction: column;
 				height: 100%;
+			}
+
+			.main {
+				flex: 1;
+				display: flex;
 			}
 
 			.col {
@@ -38,18 +47,7 @@
 
 			.col-aside {
 				width: 33.33%;
-			}
-
-			.col-aside:after {
-				content: '';
-				position: absolute;
-				top: 50px;
-				right: 0;
-				bottom: 0;
-
-				display: block;
-				width: 1px;
-				background: var(--border-color);
+				border-right: solid 1px var(--border-color);
 			}
 
 			.col-main {
@@ -59,11 +57,16 @@
 		</style>
 	</head>
 	<body class="theme-communications">
-		<div class="col col-aside">
-			<iframe class="frame-list" src="views/list"></iframe>
-		</div>
-		<div class="col col-main">
-			<iframe class="frame-detail" src="views/detail?header-action=false"></iframe>
+		<gaia-header>
+			<h1>Contacts</h1>
+		</gaia-header>
+		<div class="main">
+			<div class="col col-aside">
+				<iframe class="frame-list" src="views/list?chromeless"></iframe>
+			</div>
+			<div class="col col-main">
+				<iframe class="frame-detail" src="views/detail?chromeless"></iframe>
+			</div>
 		</div>
 	</body>
 </html>

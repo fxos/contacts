@@ -2,10 +2,12 @@
 /*global BroadcastChannel*/
 
 var debug = 0 ? console.log.bind(console, '[LIST]') : function(){};
+var chromeless = !!~location.search.indexOf('chromeless');
 var channel = new BroadcastChannel('navigate');
 var isNested = window.parent !== window;
 
 var els = {
+  header: document.querySelector('gaia-header'),
   list: document.querySelector('gaia-list')
 };
 
@@ -37,6 +39,7 @@ document.body.addEventListener('click', (e) => {
   channel.postMessage(id);
 });
 
+els.header.hidden = chromeless;
 render();
 
 function render() {

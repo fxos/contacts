@@ -17,8 +17,14 @@
   "engines": {
     "node": "0.11.14"
   },
-  "dependencies": {},
   "devDependencies": {
     "http-server": "^0.7.4"
+  },
+  "registry": "jspm",
+  "directories": {
+    "baseURL": "app"
+  },
+  "dependencies": {
+    "gaia-header": "github:wilsonpage/gaia-header@master"
   }
 }
