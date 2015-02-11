@@ -6,7 +6,9 @@
 (function() {
   'use strict';
 
-  importScripts('/glue/protocol_helper.js');
+  importScripts('/glue/protocol_helper.js',
+    '/api/pouchdb.js',
+    '/api/mozcontacts.js');
 
   var protocol = new IPDLProtocol('contactList');
 
@@ -26,7 +28,7 @@
   ]);
 
   protocol.recvGetAll = function(resolve, reject, args) {
-    resolve(Array.from(DB.values()));
+    mozContacts.getAll().then(contacts => resolve(contacts), reject);
   };
 
   protocol.recvSave =  function(resolve, reject, args) {
