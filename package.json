@@ -23,8 +23,5 @@
   "registry": "jspm",
   "directories": {
     "baseURL": "app"
-  },
-  "dependencies": {
-    "gaia-header": "github:wilsonpage/gaia-header@master"
   }
 }
