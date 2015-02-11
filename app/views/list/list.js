@@ -36,13 +36,19 @@ function render() {
   controller.getAll().then(function(contacts) {
     contacts.forEach(function(contact) {
       var el = document.createElement('a');
-      el.textContent = contact.firstName;
-      el.href = '../detail/#/' + contact.id;
+      el.textContent = getContactName(contact);
+      el.href = '../detail/#/' + contact._id;
       frag.appendChild(el);
     });
 
     els.list.appendChild(frag);
   });
+}
+
+function getContactName(contact) {
+  var components = [];
+  components.push(contact.givenName, contact.familyName, contact.tel);
+  return components.join(' ');
 }
 
 document.addEventListener('DOMContentLoaded', render);
