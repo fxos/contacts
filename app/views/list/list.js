@@ -1,5 +1,7 @@
 (function () {
-/*global BroadcastChannel*/
+/*global BroadcastChannel,
+         ContactListController
+*/
 
 var debug = 0 ? console.log.bind(console, '[LIST]') : function(){};
 var chromeless = !!~location.search.indexOf('chromeless');
@@ -9,20 +11,6 @@ var isNested = window.parent !== window;
 var els = {
   header: document.querySelector('gaia-header'),
   list: document.querySelector('gaia-list')
-};
-
-var database = {
-  1: {
-    firstName: 'Bill'
-  },
-
-  2: {
-    firstName: 'Bob'
-  },
-
-  3: {
-    firstName: 'Ben'
-  }
 };
 
 document.body.addEventListener('click', (e) => {
@@ -40,20 +28,23 @@ document.body.addEventListener('click', (e) => {
 });
 
 els.header.hidden = chromeless;
-render();
 
 function render() {
   var frag = document.createDocumentFragment();
+  var controller = new ContactListController();
 
-  for (var id in database) {
-    var item = database[id];
-    var el = document.createElement('a');
-    el.textContent = item.firstName;
-    el.href = '../detail/#/' + id;
-    frag.appendChild(el);
-  }
+  controller.getAll().then(function(contacts) {
+    contacts.forEach(function(contact) {
+      var el = document.createElement('a');
+      el.textContent = contact.firstName;
+      el.href = '../detail/#/' + contact.id;
+      frag.appendChild(el);
+    });
 
-  els.list.appendChild(frag);
+    els.list.appendChild(frag);
+  });
 }
+
+document.addEventListener('DOMContentLoaded', render);
 
 })();

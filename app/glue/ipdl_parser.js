@@ -88,87 +88,87 @@ case 1:
     protocols = $$[$0-1];
     debug(protocols.toString());
     this.$ = $$[$0-1];
-  
+
 break;
 case 2:
 
     this.$ = new Protocol($$[$0-4], $$[$0-2]);
-  
+
 break;
 case 3:
 
     this.$ = new DebugProtocol($$[$0-4], $$[$0-2]);
-  
+
 break;
 case 4: case 16: case 19:
 
     this.$ = [$$[$0]];
-  
+
 break;
 case 5:
 
     this.$ = aggregate($$[$0], $$[$0-1]);
-  
+
 break;
 case 6:
 
     this.$ = new Side($$[$0-1], []);
-  
+
 break;
 case 7:
 
     this.$ = new DebugSide($$[$0-1], []);
-  
+
 break;
 case 8:
 
     this.$ = new Side($$[$0-2], $$[$0]);
-  
+
 break;
 case 9:
 
     this.$ = new DebugSide($$[$0-2], $$[$0]);
-  
+
 break;
 case 10:
 
     this.$ = [$$[$0-1]];
-  
+
 break;
 case 11: case 17: case 20:
 
     this.$ = aggregate($$[$0-2], $$[$0]);
-  
+
 break;
 case 12:
 
     this.$ = new Method($$[$0-2], []);
-  
+
 break;
 case 13:
 
     this.$ = new Method($$[$0-3], $$[$0-1]);
-  
+
 break;
 case 14:
 
     this.$ = new ReturnMethod($$[$0], $$[$0-2]);
-  
+
 break;
 case 15:
 
     this.$ = new ReturnMethod($$[$0], []);
-  
+
 break;
 case 18:
 
     this.$ = new Return($$[$0]);
-  
+
 break;
 case 21:
 
     this.$ = new Parameter($$[$0]);
-  
+
 break;
 }
 },
@@ -868,7 +868,7 @@ case 16:return 5
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:(\/\*(.|\r|\n)*?\*\/))/,/^(?:protocol\b)/,/^(?:Promise\b)/,/^(?:((window\b)|(worker\b)|(serviceworker\b)|(both\b)))/,/^(?:(debug\b))/,/^(?:[a-zA-Z]+)/,/^(?:\{)/,/^(?:\})/,/^(?:\()/,/^(?:\))/,/^(?:<)/,/^(?:>)/,/^(?::)/,/^(?:;)/,/^(?:,)/,/^(?:$)/],
+rules: [/^(?:\s+)/,/^(?:(\/\*(.|\r|\n)*?\*\/))/,/^(?:protocol\b)/,/^(?:Promise\b)/,/^(?:((window\b)|(worker\b)|(sharedworker\b)|(serviceworker\b)|(both\b)))/,/^(?:(debug\b))/,/^(?:[a-zA-Z]+)/,/^(?:\{)/,/^(?:\})/,/^(?:\()/,/^(?:\))/,/^(?:<)/,/^(?:>)/,/^(?::)/,/^(?:;)/,/^(?:,)/,/^(?:$)/],
 conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],"inclusive":true}}
 });
 return lexer;

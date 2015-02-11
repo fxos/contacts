@@ -1,0 +1,11 @@
+protocol PContactList
+{
+  sharedworker:
+    GetAll();
+    Get(id);
+    Remove(id);
+    Save(contact);
+
+  window:
+    contactChanged(contact);
+};

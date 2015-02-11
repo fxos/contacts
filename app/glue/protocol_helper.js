@@ -57,7 +57,7 @@
 //    xhr.onload = function() {
 //      resolve(this.responseText);
 //    };
-//    
+//
 //    xhr.onerror = function() {
 //      reject(this.status);
 //    };
@@ -74,11 +74,11 @@
 //      }
 //    );
 //  };
-//  
+//
 
-importScripts('glue/ipdl.js');
-importScripts('glue/bridge.js');
-importScripts('glue/protocol.js');
+importScripts('/glue/ipdl.js');
+importScripts('/glue/bridge.js');
+importScripts('/glue/protocol.js');
 
 var IPDLProtocol = function(name, target) {
   var ipdl = new IPDL(name);

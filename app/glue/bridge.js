@@ -4,6 +4,8 @@ var BridgeHelper = {
   map: {
     'window->worker': BridgeWindowToWorker,
     'worker->window': BridgeWorkerToWindow,
+    'window->sharedworker': BridgeWindowToSharedWorker,
+    'sharedworker->window': BridgeSharedWorkerToWindow,
     'window->serviceworker': BridgeWindowToServiceWorker,
     'serviceworker->window': BridgeServiceWorkerToWindow
   },
@@ -156,6 +158,35 @@ BridgeWindowToWorker.prototype.forwardMessage = function(json) {
   this.target.postMessage(json);
 };
 
+
+/**
+ * BridgeWindowToSharedWorker
+ */
+function BridgeWindowToSharedWorker(tag, ipdl, target) {
+  Bridge.call(this, tag, ipdl, target);
+
+  if (!this.target) {
+    var msg = 'Need an explicit target for a ' +
+              this.side.name +
+              '->' +
+              this.otherside.name +
+              ' bridge.';
+    throw new Error(msg);
+  }
+}
+
+BridgeWindowToSharedWorker.prototype = Object.create(Bridge.prototype);
+
+BridgeWindowToSharedWorker.prototype.listenMessage = function() {
+  this.target.port.addEventListener('message', this);
+  this.target.port.start();
+};
+
+BridgeWindowToSharedWorker.prototype.forwardMessage = function(json) {
+  this.target.port.postMessage(json);
+};
+
+
 /**
  * BridgeWindowToServiceWorker
  */
@@ -198,6 +229,36 @@ BridgeWorkerToWindow.prototype.listenMessage = function() {
 
 BridgeWorkerToWindow.prototype.forwardMessage = function(json) {
   postMessage(json);
+};
+
+
+/**
+ * BridgeSharedWorkerToWindow
+ */
+function BridgeSharedWorkerToWindow(tag, ipdl, target) {
+  this._ports = [];
+  Bridge.call(this, tag, ipdl, target);
+}
+
+BridgeSharedWorkerToWindow.prototype = Object.create(Bridge.prototype);
+
+BridgeSharedWorkerToWindow.prototype.listenMessage = function() {
+  addEventListener('connect', function(eConnect) {
+    var port = eConnect.ports[0];
+
+    port.addEventListener('message', this);
+    port.start();
+
+    this._ports.push(port);
+  }.bind(this));
+};
+
+BridgeSharedWorkerToWindow.prototype.forwardMessage = function(json) {
+  // TODO: We probably should forward message only to the port that's waiting
+  // for it. + We can have "dead" ports that we should remove from ports list.
+  this._ports.forEach(function(port) {
+    port.postMessage(json);
+  });
 };
 
 
