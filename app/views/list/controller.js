@@ -1,11 +1,13 @@
 /* global IPDLProtocol */
 
+/* exported ContactListController */
+
 (function(exports) {
   'use strict';
 
   var ContactListController = function () {
     this.protocol = new IPDLProtocol(
-      'contactList', new SharedWorker('worker.js')
+      'contactList', new SharedWorker('/lib/db_worker.js')
     );
     this.protocol.recvContactChanged = this.onContactChanged;
   };
@@ -16,14 +18,6 @@
 
   ContactListController.prototype.remove = function(id) {
     return this.protocol.sendRemove(id);
-  };
-
-  ContactListController.prototype.save = function(contact) {
-    return this.protocol.sendSave(contact);
-  };
-
-  ContactListController.prototype.get = function(id) {
-    return this.protocol.sendGet(id);
   };
 
   ContactListController.prototype.onContactChanged =

@@ -11,8 +11,20 @@
   }
 
   function find(options) {
-    // Not implemented yet
-    return Promise.reject('Not implemented');
+    if (options.filterBy.length > 1 || options.filterBy[0] !== 'id') {
+      // Not implemented yet
+      return Promise.reject('Only search by ID is supported!');
+    }
+
+    ensureDB();
+    return db.allDocs({
+      include_docs: true,
+      key: options.filterValue
+    }).then(function(result) {
+      return result.rows.map(function(row) {
+        return row.doc;
+      });
+    });
   }
 
   function getAll(options) {

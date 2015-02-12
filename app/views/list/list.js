@@ -1,12 +1,14 @@
 (function () {
 /*global BroadcastChannel,
-         ContactListController
+         ContactListController,
+         onDomReady
 */
 
 var debug = 0 ? console.log.bind(console, '[LIST]') : function(){};
 var chromeless = !!~location.search.indexOf('chromeless');
 var channel = new BroadcastChannel('navigate');
 var isNested = window.parent !== window;
+var controller;
 
 var els = {
   header: document.querySelector('gaia-header'),
@@ -31,7 +33,6 @@ els.header.hidden = chromeless;
 
 function render() {
   var frag = document.createDocumentFragment();
-  var controller = new ContactListController();
 
   controller.getAll().then(function(contacts) {
     contacts.forEach(function(contact) {
@@ -46,11 +47,27 @@ function render() {
 }
 
 function getContactName(contact) {
-  var components = [];
-  components.push(contact.givenName, contact.familyName, contact.tel);
-  return components.join(' ');
+  var givenName = (contact.givenName && contact.givenName[0]) || '';
+  var familyName = (contact.familyName && contact.familyName[0]) || '';
+
+  if (givenName || familyName) {
+    return givenName + ' ' + familyName;
+  }
+
+  if (contact.tel && contact.tel.length) {
+    return contact.tel[0].value;
+  }
+
+  if (contact.email && contact.email.length) {
+    return contact.email[0];
+  }
+
+  return '';
 }
 
-document.addEventListener('DOMContentLoaded', render);
+onDomReady().then(function() {
+  controller = new ContactListController();
+  render();
+});
 
 })();

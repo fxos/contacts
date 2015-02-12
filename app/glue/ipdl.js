@@ -20,7 +20,9 @@ IPDL.prototype.getSide = function(sides) {
 
   try {
     if (window !== undefined) {
-      return getSide('window');
+      // TODO: This is a nasty hack that allows to run worker code in a separate
+      // tab to be able to debug it. Will get rid of it once get better solution
+      return window.__fakeWorker ? getSide('worker') : getSide('window');
     }
   } catch(e) {}
 
