@@ -1,8 +1,7 @@
-protocol PContactList
+protocol PContactDetails
 {
   sharedworker:
-    GetAll();
-    Remove(id);
+    Get(id);
 
   window:
     contactChanged(contact);

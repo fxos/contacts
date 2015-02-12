@@ -1,3 +1,7 @@
+/* global ContactDetailsController,
+          onDomReady
+*/
+
 (function() {
 
 var debug = 0 ? console.log.bind(console, '[LIST]') : function(){};
@@ -8,24 +12,10 @@ var els = {
   actionButton: document.querySelector('.action'),
   firstName: document.querySelector('.first-name')
 };
-
-var database = {
-  1: {
-    firstName: 'Bill'
-  },
-
-  2: {
-    firstName: 'Bob'
-  },
-
-  3: {
-    firstName: 'Ben'
-  }
-};
+var controller;
 
 // Setup
 els.header.hidden = chromeless;
-render();
 
 // Events
 addEventListener('hashchange', render);
@@ -34,13 +24,39 @@ function getContactId() {
   return location.hash.slice(2);
 }
 
+function getContactName(contact) {
+  var givenName = (contact.givenName && contact.givenName[0]) || '';
+  var familyName = (contact.familyName && contact.familyName[0]) || '';
+
+  if (givenName || familyName) {
+    return givenName + ' ' + familyName;
+  }
+
+  if (contact.tel && contact.tel.length) {
+    return contact.tel[0].value;
+  }
+
+  if (contact.email && contact.email.length) {
+    return contact.email[0];
+  }
+
+  return '';
+}
+
 function render() {
   var id = getContactId();
-  var data = database[id];
 
-  debug('render', data, id);
-  if (!data) { return; }
-  els.firstName.textContent = data.firstName;
+  controller.get(id).then(function(contact) {
+    debug('Contact retrieved successfully', contact);
+    els.firstName.textContent = getContactName(contact);
+  }, function() {
+    debug('Error occurred while retrieving contact by id', id);
+  });
 }
+
+onDomReady().then(function() {
+  controller = new ContactDetailsController();
+  render();
+});
 
 })();

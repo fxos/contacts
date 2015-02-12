@@ -1,7 +1,11 @@
+/* global ContactEditController,
+          onDomReady
+*/
 (function() {
 
 var debug = 1 ? console.log.bind(console, '[LIST]') : function(){};
 var chromeless = !!~location.search.indexOf('chromeless');
+var controller;
 
 var els = {
   header: document.querySelector('gaia-header'),
@@ -24,7 +28,11 @@ function render() {
 
 function onSaveClick() {
   var data = getFormData();
-  debug('save form', data);
+  controller.save(data).then(function() {
+    debug('Contact saved successfully', data);
+  }, function() {
+    debug('Error occurred while saving contact', data);
+  });
 }
 
 function getFormData() {
@@ -37,5 +45,10 @@ function getFormData() {
 
   return result;
 }
+
+onDomReady().then(function() {
+  controller = new ContactEditController();
+  render();
+});
 
 })();

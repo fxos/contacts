@@ -1,8 +1,7 @@
-protocol PContactList
+protocol PContactEdit
 {
   sharedworker:
-    GetAll();
-    Remove(id);
+    Save(contact);
 
   window:
     contactChanged(contact);

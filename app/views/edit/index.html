@@ -13,6 +13,9 @@
     <script defer src="../../components/gaia-component/gaia-component.js"></script>
     <script defer src="../../components/gaia-header/dist/gaia-header.js"></script>
     <script defer src="../../components/gaia-text-input/gaia-text-input.js"></script>
+    <script defer src="/utils.js"></script>
+    <script defer src="/glue/protocol_helper.js"></script>
+    <script defer src="controller.js"></script>
     <script defer src="edit.js"></script>
   </head>
   <body class="theme-communications">
@@ -22,10 +25,10 @@
       <button class="save">Save</button>
     </gaia-header>
     <div class="content">
-      <gaia-text-input name="firstname" placeholder="First Name"></gaia-text-input>
-      <gaia-text-input name="lastname" placeholder="Last Name"></gaia-text-input>
+      <gaia-text-input name="givenName" placeholder="First Name"></gaia-text-input>
+      <gaia-text-input name="familyName" placeholder="Last Name"></gaia-text-input>
       <gaia-text-input name="email" type="email" placeholder="Email"></gaia-text-input>
-      <gaia-text-input name="phone" type="number" placeholder="Phone"></gaia-text-input>
+      <gaia-text-input name="tel" type="tel" placeholder="Phone"></gaia-text-input>
     </div>
   </body>
 </html>
