@@ -2,6 +2,7 @@
   /*global BroadcastChannel*/
 
   var debug = 0 ? console.log.bind(console, '[DOC]') : function(){};
+
   var channel = new BroadcastChannel('navigate');
 
   var els = {
@@ -24,4 +25,20 @@
     var win = els.frames.detail.contentWindow;
     win.location.hash = location.hash;
   }
+
+  addEventListener('load', () => {
+    debug('Registering service worker');
+    navigator.serviceWorker.register('sw.js').then((worker) => {
+      var theWorker = worker.installing || worker.waiting ||
+                      worker.active;
+      if (navigator.serviceWorker.controller) {
+        //window.sessionStoreAPI = new SessionStoreAPI(theWorker);
+        //window.updateAPI = new UpdateAPI();
+        //window.urlOverladingAPI = new UrlOverloadingAPI();
+      }
+      debug('Registered ' + theWorker);
+    }, function(e) {
+      debug('Not registered: ' + e);
+    });
+  });
 })();
