@@ -1914,6 +1914,8 @@ var DETECT_BLOB_SUPPORT_STORE = idbConstants.DETECT_BLOB_SUPPORT_STORE;
 // FileReader bug: https://code.google.com/p/chromium/issues/detail?id=447836
 //
 function checkBlobSupport(txn, idb) {
+  return Promise.resolve();
+
   return new utils.Promise(function (resolve, reject) {
     var blob = utils.createBlob([''], {type: 'image/png'});
     txn.objectStore(DETECT_BLOB_SUPPORT_STORE).put(blob, 'key');
