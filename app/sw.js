@@ -3,6 +3,7 @@
 importScripts('/contacts/app/sw-utils.js');
 
 var worker = new ServiceWorker();
+var renderCache;
 
 const OFFLINE_CACHE = 'offline-cache-v0';
 
@@ -25,20 +26,38 @@ worker.oninstall = function(e) {
 
 worker.onactivate = function(e) {
   debug('onactivate');
+  importScripts('/contacts/app/rendercache/worker_api.js');
+  renderCache = new RenderCacheWorker();
 };
 
 worker.onfetch = function(e) {
   debug('onfetch: ' + e.request.url);
+  var url = e.request.url;
+
   e.respondWith(
-    caches.open(OFFLINE_CACHE).then(function(cache) {
-      return cache.match(e.request.url);
-    }).then(function(response) {
-      if (!response) {
-        debug(e.request.url + ' is NOT in the CACHE');
-        return fetch(e.request);
+    renderCache.match(url).then(function(response) {
+      if (response) {
+        return response;
       }
-      debug(e.request.url + ' is in the CACHE');
-      return response;
+
+      if (url.indexOf('?') != -1) {
+        url = url.split('?')[0];
+      }
+
+      return caches.open(OFFLINE_CACHE).then(function(cache) {
+        return cache.match(url);
+      }).then(function(response) {
+        if (!response) {
+          // fetch(e.request) never resolves.
+          // e.default() crashes the browser
+          debug(url + ' is NOT in the cache');
+          return Promise.resolve(new Response(''));
+        }
+        debug(url + ' is in the cache');
+        return response;
+      }).catch(function(error) {
+        debug('Error for ' + e.request.url + ' ' + error);
+      });
     })
   );
 };

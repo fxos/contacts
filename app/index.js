@@ -32,7 +32,10 @@
       var theWorker = worker.installing || worker.waiting ||
                       worker.active;
       if (navigator.serviceWorker.controller) {
-        //window.sessionStoreAPI = new SessionStoreAPI(theWorker);
+        importScripts('/contacts/app/rendercache/api.js');
+        debug('renderCache ' + window.RenderCacheAPI);
+        window.renderCache = new RenderCacheAPI(theWorker);
+        debug('renderCache ' + window.renderCache);
         //window.updateAPI = new UpdateAPI();
         //window.urlOverladingAPI = new UrlOverloadingAPI();
       }
