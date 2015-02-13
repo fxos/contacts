@@ -1,13 +1,47 @@
 // Needs pouchdb.js
 
+/* global myPouch,
+          EventDispatcher
+*/
+
+/* exported mozContacts */
+
 (function(exports) {
   'use strict';
+
   const DB_NAME = 'pouchcontacts';
 
-  var db;
+  /**
+   * Possible change reason type.
+   * @enum {string}
+   */
+  const changeReason = {
+    UPDATE: 'update',
+    CREATE: 'create',
+    REMOVE: 'remove'
+  };
 
+  function onChange(reason, change) {
+    exports.mozContacts.dispatchEvent('contactchange', {
+      contactID: change.id,
+      reason: reason
+    });
+  }
+
+  var db;
   function ensureDB() {
-    db = new myPouch(DB_NAME);
+    if (!db) {
+      db = new myPouch(DB_NAME);
+      db.changes({
+        since: 'now',
+        live: true
+      }).
+      on('create',  onChange.bind(null, changeReason.CREATE)).
+      on('update',  onChange.bind(null, changeReason.UPDATE)).
+      on('delete',  onChange.bind(null, changeReason.REMOVE));
+    }
+
+    return db;
   }
 
   function find(options) {
@@ -102,7 +136,7 @@
     return Promise.all(promises);
   }
 
-  exports.mozContacts = {
+  exports.mozContacts = EventDispatcher.mixin({
     find,
     getAll,
     clear,
@@ -112,5 +146,5 @@
     getCount,
     db,
     prefill
-  }
+  }, ['contactchange']);
 })(this);

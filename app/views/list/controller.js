@@ -1,4 +1,6 @@
-/* global IPDLProtocol */
+/* global IPDLProtocol,
+          EventDispatcher
+*/
 
 /* exported ContactListController */
 
@@ -6,23 +8,26 @@
   'use strict';
 
   var ContactListController = function () {
+    EventDispatcher.mixin(this, ['contactchange']);
+
     this.protocol = new IPDLProtocol(
       'contactList', new SharedWorker('/lib/db_worker.js')
     );
-    this.protocol.recvContactChanged = this.onContactChanged;
+    this.protocol.recvContactChange = this.onContactChange.bind(this);
   };
 
   ContactListController.prototype.getAll = function() {
     return this.protocol.sendGetAll();
   };
 
-  ContactListController.prototype.remove = function(id) {
-    return this.protocol.sendRemove(id);
-  };
-
-  ContactListController.prototype.onContactChanged =
-  function(resolve, reject, contact) {
-    resolve();
+  ContactListController.prototype.onContactChange =
+  function(resolve, reject, args) {
+    try {
+      this.dispatchEvent('contactchange', args.e);
+      resolve();
+    } catch(e) {
+      reject(e);
+    }
   };
 
   exports.ContactListController = ContactListController;

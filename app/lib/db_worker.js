@@ -9,22 +9,23 @@
   importScripts(
     '/glue/protocol_helper.js',
     '/api/pouchdb.js',
+    '/event_dispatcher.js',
     '/api/mozcontacts.js'
   );
 
-  var listProtocol = new IPDLProtocol('contactList');
-  var editProtocol = new IPDLProtocol('contactEdit');
-  var detailsProtocol = new IPDLProtocol('contactDetails');
+  const protocols = {
+    list: new IPDLProtocol('contactList'),
+    details: new IPDLProtocol('contactDetails'),
+    edit: new IPDLProtocol('contactEdit')
+  };
 
-  listProtocol.recvGetAll = function(resolve, reject, args) {
+  /* List protocol methods */
+  protocols.list.recvGetAll = function(resolve, reject, args) {
     mozContacts.getAll().then(resolve, reject);
   };
 
-  listProtocol.recvRemove =  function(resolve, reject, args) {
-    reject(new Error('Not implemented!'));
-  };
-
-  editProtocol.recvSave =  function(resolve, reject, args) {
+  /* Edit protocol methods */
+  protocols.edit.recvSave =  function(resolve, reject, args) {
     var contact = args.contact;
     mozContacts.save({
       givenName: contact.givenName ? [contact.givenName] : [],
@@ -34,7 +35,8 @@
     }).then(resolve, reject);
   };
 
-  detailsProtocol.recvGet =  function(resolve, reject, args) {
+  /* Details protocol methods */
+  protocols.details.recvGet =  function(resolve, reject, args) {
     mozContacts.find({
       filterBy: ['id'],
       filterOp: 'equals',
@@ -43,4 +45,13 @@
       resolve(results && results.length > 0 ? results[0] : null);
     }, reject);
   };
+
+  protocols.details.recvRemove =  function(resolve, reject, args) {
+    return mozContacts.remove(args.contact).then(resolve, reject);
+  };
+
+  mozContacts.addEventListener('contactchange', function(e) {
+    protocols.list.sendContactChange(e);
+    protocols.details.sendContactChange(e);
+  });
 })();

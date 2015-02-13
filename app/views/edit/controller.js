@@ -9,7 +9,6 @@
     this.protocol = new IPDLProtocol(
       'contactEdit', new SharedWorker('/lib/db_worker.js')
     );
-    this.protocol.recvContactChanged = this.onContactChanged;
   };
 
   ContactEditController.prototype.save = function(contact) {
