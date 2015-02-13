@@ -2,7 +2,8 @@ protocol PContactDetails
 {
   sharedworker:
     Get(id);
+    Remove(contact);
 
   window:
-    contactChanged(contact);
+    contactChange(e);
 };

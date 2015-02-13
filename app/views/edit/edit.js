@@ -28,8 +28,9 @@ function render() {
 
 function onSaveClick() {
   var data = getFormData();
-  controller.save(data).then(function() {
+  controller.save(data).then(function(contact) {
     debug('Contact saved successfully', data);
+    document.location = '../detail/#/' + contact.id;
   }, function() {
     debug('Error occurred while saving contact', data);
   });

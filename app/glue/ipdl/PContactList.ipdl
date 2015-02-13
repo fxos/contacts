@@ -2,8 +2,7 @@ protocol PContactList
 {
   sharedworker:
     GetAll();
-    Remove(id);
 
   window:
-    contactChanged(contact);
+    contactChange(e);
 };

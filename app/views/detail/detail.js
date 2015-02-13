@@ -10,9 +10,10 @@ var chromeless = !!~location.search.indexOf('chromeless');
 var els = {
   header: document.querySelector('gaia-header'),
   actionButton: document.querySelector('.action'),
-  firstName: document.querySelector('.first-name')
+  firstName: document.querySelector('.first-name'),
+  removeContactButton: document.querySelector('.remove-contact')
 };
-var controller;
+var controller, activeContact;
 
 // Setup
 els.header.hidden = chromeless;
@@ -48,7 +49,8 @@ function render() {
 
   controller.get(id).then(function(contact) {
     debug('Contact retrieved successfully', contact);
-    els.firstName.textContent = getContactName(contact);
+    activeContact = contact;
+    els.firstName.textContent = getContactName(activeContact);
   }, function() {
     debug('Error occurred while retrieving contact by id', id);
   });
@@ -56,6 +58,20 @@ function render() {
 
 onDomReady().then(function() {
   controller = new ContactDetailsController();
+  // Re-render content once contact list is updated
+  controller.addEventListener('contactchange', render);
+
+  els.removeContactButton.addEventListener('click', function() {
+    if (window.confirm('Delete contact?')) {
+      controller.remove(activeContact).then(function() {
+        debug('Contact removed successfully', activeContact._id);
+        document.location = '../list';
+      }, function() {
+        debug('Error occurred while removing contact', activeContact._id);
+      });
+    }
+  });
+
   render();
 });
 

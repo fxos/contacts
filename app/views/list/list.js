@@ -34,6 +34,10 @@ els.header.hidden = chromeless;
 function render() {
   var frag = document.createDocumentFragment();
 
+  if (els.list.textContent) {
+    els.list.textContent = '';
+  }
+
   controller.getAll().then(function(contacts) {
     contacts.forEach(function(contact) {
       var el = document.createElement('a');
@@ -67,6 +71,8 @@ function getContactName(contact) {
 
 onDomReady().then(function() {
   controller = new ContactListController();
+  // Re-render content once contact list is updated
+  controller.addEventListener('contactchange', render);
   render();
 });
 

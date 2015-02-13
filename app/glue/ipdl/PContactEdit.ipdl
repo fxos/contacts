@@ -4,5 +4,4 @@ protocol PContactEdit
     Save(contact);
 
   window:
-    contactChanged(contact);
 };
