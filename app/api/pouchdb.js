@@ -486,7 +486,7 @@ AbstractPouchDB.prototype._compact = function (opts, callback) {
     .on('complete', onComplete)
     .on('error', callback);
 };
-/* Begin api wrappers. Specific functionality to storage belongs in the 
+/* Begin api wrappers. Specific functionality to storage belongs in the
    _[method] */
 AbstractPouchDB.prototype.get =
   utils.adapterFun('get', function (id, opts, callback) {
@@ -1386,7 +1386,7 @@ function HttpPouch(opts, callback) {
   }));
 
   // Add the document given by doc (in JSON string format) to the database
-  // given by host. This does not assume that doc is a new document 
+  // given by host. This does not assume that doc is a new document
   // (i.e. does not have a _id or a _rev field.)
   api.post = utils.adapterFun('post', function (doc, opts, callback) {
     // If no options were given, set the callback to be the second parameter
@@ -1819,7 +1819,7 @@ function HttpPouch(opts, callback) {
       source.close();
       utils.call(opts.complete, err);
     }
-    
+
   };
 
   api._useSSE = false;
@@ -5492,7 +5492,7 @@ Changes.prototype.filterChanges = function (opts) {
         return;
       }
       if (ddoc && ddoc.views && ddoc.views[viewName[1]]) {
-        
+
         var filter = evalView(ddoc.views[viewName[1]].map);
         opts.filter = filter;
         self.doChanges(opts);
@@ -5681,7 +5681,7 @@ function PouchDB(name, opts, callback) {
       delete resp.then;
       fulfill(resp);
     };
-  
+
     opts = utils.clone(opts);
     var originalName = opts.name || name;
     var backend, error;
@@ -5695,7 +5695,7 @@ function PouchDB(name, opts, callback) {
         }
 
         backend = PouchDB.parseAdapter(originalName, opts);
-        
+
         opts.originalName = originalName;
         opts.name = backend.name;
         if (opts.prefix && backend.adapter !== 'http' &&
@@ -6787,7 +6787,7 @@ Dual licensed under the MIT and GPL licenses.
  *   >>> Math.uuid(15)     // 15 character ID (default base=62)
  *   "VcydxgltxrVZSTV"
  *
- *   // Two arguments - returns ID of the specified length, and radix. 
+ *   // Two arguments - returns ID of the specified length, and radix.
  *   // (Radix must be <= 62)
  *   >>> Math.uuid(8, 2)  // 8 character ID (base=2)
  *   "01001010"
@@ -8396,6 +8396,18 @@ exports.hasLocalStorage = function () {
     return false;
   }
 };
+
+exports.hasBroadcastChannel = function () {
+  if (isChromeApp()) {
+    return false;
+  }
+  try {
+    return !!BroadcastChannel;
+  } catch (e) {
+    return false;
+  }
+};
+
 exports.Changes = Changes;
 exports.inherits(Changes, EventEmitter);
 function Changes() {
@@ -8407,15 +8419,29 @@ function Changes() {
   this.isChrome = isChromeApp();
   this.listeners = {};
   this.hasLocal = false;
+  this.hasBroadcastChannel = false;
+
   if (!this.isChrome) {
+    this.hasBroadcastChannel = exports.hasBroadcastChannel();
+  }
+
+  if (!this.isChrome && !this.hasBroadcastChannel) {
     this.hasLocal = exports.hasLocalStorage();
   }
+
   if (this.isChrome) {
     chrome.storage.onChanged.addListener(function (e) {
       // make sure it's event addressed to us
       if (e.db_name != null) {
         //object only has oldValue, newValue members
         self.emit(e.dbName.newValue);
+      }
+    });
+  } else if (this.hasBroadcastChannel) {
+    this.channel = new BroadcastChannel('pouchdb');
+    this.channel.addEventListener('message', function(message) {
+      if (message.data && message.data.dbName) {
+        self.emit(message.data.dbName);
       }
     });
   } else if (this.hasLocal) {
@@ -8492,6 +8518,10 @@ Changes.prototype.notifyLocalWindows = function (dbName) {
   //in order to get other windows's listeners to activate
   if (this.isChrome) {
     chrome.storage.local.set({dbName: dbName});
+  } else if (this.hasBroadcastChannel) {
+    this.channel.postMessage({
+      dbName: dbName
+    });
   } else if (this.hasLocal) {
     localStorage[dbName] = (localStorage[dbName] === "a") ? "b" : "a";
   }
@@ -10029,7 +10059,7 @@ function all(iterable) {
   var resolved = 0;
   var i = -1;
   var promise = new Promise(INTERNAL);
-  
+
   while (++i < len) {
     allResolver(iterable[i], i);
   }
@@ -10138,7 +10168,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
   }
   var promise = new Promise(INTERNAL);
 
-  
+
   if (this.state !== states.PENDING) {
     var resolver = this.state === states.FULFILLED ? onFulfilled: onRejected;
     unwrap(promise, resolver, this.outcome);
@@ -10200,7 +10230,7 @@ function race(iterable) {
   var resolved = 0;
   var i = -1;
   var promise = new Promise(INTERNAL);
-  
+
   while (++i < len) {
     resolver(iterable[i]);
   }
@@ -10292,7 +10322,7 @@ function safelyResolveThenable(self, thenable) {
   function tryToUnwrap() {
     thenable(onSuccess, onError);
   }
-  
+
   var result = tryCatch(tryToUnwrap);
   if (result.status === 'error') {
     onError(result.value);
@@ -10474,7 +10504,7 @@ exports.install = function (t) {
 
 var MIN_MAGNITUDE = -324; // verified by -Number.MIN_VALUE
 var MAGNITUDE_DIGITS = 3; // ditto
-var SEP = ''; // set to '_' for easier debugging 
+var SEP = ''; // set to '_' for easier debugging
 
 var utils = _dereq_('./utils');
 
@@ -11200,7 +11230,7 @@ module.exports = function (opts) {
         db.auto_compaction = true;
         var view = {
           name: depDbName,
-          db: db, 
+          db: db,
           sourceDB: sourceDB,
           adapter: sourceDB.adapter,
           mapFun: mapFun,
@@ -11246,7 +11276,7 @@ var toIndexableString = pouchCollate.toIndexableString;
 var normalizeKey = pouchCollate.normalizeKey;
 var createView = _dereq_('./create-view');
 var evalFunc = _dereq_('./evalfunc');
-var log; 
+var log;
 /* istanbul ignore else */
 if ((typeof console !== 'undefined') && (typeof console.log === 'function')) {
   log = Function.prototype.bind.call(console.log, console);

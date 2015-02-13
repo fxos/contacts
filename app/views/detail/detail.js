@@ -72,7 +72,7 @@ onDomReady().then(function() {
     if (window.confirm('Delete contact?')) {
       controller.remove(activeContact).then(function() {
         debug('Contact removed successfully', activeContact._id);
-        document.location = '/views/list/index.html';
+        document.location = 'views/list/index.html';
       }, function() {
         debug('Error occurred while removing contact', activeContact._id);
       });

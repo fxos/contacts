@@ -1,15 +1,12 @@
-// Needs pouchdb.js
-
 /* global myPouch,
-          EventDispatcher
+          EventDispatcher,
+          AppConfig
 */
 
 /* exported mozContacts */
 
 (function(exports) {
   'use strict';
-
-  const DB_NAME = 'pouchcontacts';
 
   /**
    * Possible change reason type.
@@ -31,9 +28,9 @@
   var db;
   function ensureDB() {
     if (!db) {
-      db = new myPouch(DB_NAME);
+      db = new myPouch(AppConfig.databases.contacts.name);
+
       db.changes({
-        since: 'now',
         live: true
       }).
       on('create',  onChange.bind(null, changeReason.CREATE)).

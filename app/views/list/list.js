@@ -34,11 +34,11 @@ els.header.hidden = chromeless;
 function render() {
   var frag = document.createDocumentFragment();
 
-  if (els.list.textContent) {
-    els.list.textContent = '';
-  }
-
   controller.getAll().then(function(contacts) {
+    if (els.list.textContent) {
+      els.list.textContent = '';
+    }
+
     contacts.forEach(function(contact) {
       var el = document.createElement('a');
       el.textContent = getContactName(contact);
@@ -73,6 +73,9 @@ onDomReady().then(function() {
   importScripts('rendercache/api.js');
   controller = new ContactListController();
   // Re-render content once contact list is updated
+  // TODO: This is very inefficient code, we should debounce this event handler
+  // since we can have tons of consequent events if we fetched several records
+  // during sync.
   controller.addEventListener('contactchange', render);
   render();
 });
