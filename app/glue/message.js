@@ -1,6 +1,6 @@
 'use strict';
 
-importScripts('/glue/utils/uuid.js');
+importScripts('/contacts/app/glue/utils/uuid.js');
 
 function Message(tag, uuid) {
   if (!tag) {

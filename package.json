@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "FxOS contacts dependencies.",
   "scripts": {
-    "start": "http-server ./app"
+    "start": "http-server ../"
   },
   "repository": {
     "type": "git",

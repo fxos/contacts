@@ -1,7 +1,7 @@
 'use strict';
 
-importScripts('/glue/message.js');
-importScripts('/glue/store.js');
+importScripts('/contacts/app/glue/message.js');
+importScripts('/contacts/app/glue/store.js');
 
 var Protocol = function(methods, bridge) {
   this.store = new PromiseStore();

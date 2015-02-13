@@ -1,6 +1,6 @@
 'use strict';
 
-importScripts('/glue/ipdl_parser.js');
+importScripts('/contacts/app/glue/ipdl_parser.js');
 
 function IPDL(name) {
   var ast = parser.parse(this._getFileContent(name));
@@ -56,7 +56,7 @@ IPDL.prototype.getOtherSide = function(sides) {
 IPDL.prototype._getFileContent = function(name) {
   var xhr = new XMLHttpRequest();
   var filename =
-    '/glue/ipdl/' +
+    '/contacts/app/glue/ipdl/' +
     'P' +
     name.charAt(0).toUpperCase() + name.slice(1) +
     '.ipdl';

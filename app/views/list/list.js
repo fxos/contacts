@@ -42,7 +42,7 @@ function render() {
     contacts.forEach(function(contact) {
       var el = document.createElement('a');
       el.textContent = getContactName(contact);
-      el.href = '../detail/#/' + contact._id;
+      el.href = '/contacts/app/views/detail/index.html#/' + contact._id;
       frag.appendChild(el);
     });
 

@@ -1,6 +1,6 @@
 'use strict';
 
-importScripts('/sw-utils.js');
+importScripts('/contacts/app/sw-utils.js');
 
 var worker = new ServiceWorker();
 
@@ -9,7 +9,7 @@ const OFFLINE_CACHE = 'offline-cache-v0';
 worker.oninstall = function(e) {
   debug('oninstall');
 
-  importScripts('/sw-files.js');
+  importScripts('/contacts/app/sw-files.js');
 
   e.waitUntil(
     caches.open(OFFLINE_CACHE).then(function(cache) {

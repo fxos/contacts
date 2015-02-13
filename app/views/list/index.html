@@ -4,28 +4,28 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
 		<title>Contacts: List</title>
-		<link rel="prerender" src="view/detail">
+		<link rel="prerender" src="/contacts/app/views/detail/index.html">
 
-		<link rel="stylesheet" href="../../components/base/base.css">
-		<link rel="stylesheet" href="../../components/gaia-fonts/style.css">
-		<link rel="stylesheet" href="../../components/gaia-theme/gaia-theme.css">
-		<link rel="stylesheet" href="../../components/gaia-icons/gaia-icons.css">
-		<link rel="stylesheet" href="list.css">
+		<link rel="stylesheet" href="/contacts/app/components/base/base.css">
+		<link rel="stylesheet" href="/contacts/app/components/gaia-fonts/style.css">
+		<link rel="stylesheet" href="/contacts/app/components/gaia-theme/gaia-theme.css">
+		<link rel="stylesheet" href="/contacts/app/components/gaia-icons/gaia-icons.css">
+		<link rel="stylesheet" href="/contacts/app/views/list/list.css">
 
-		<script defer src="../../components/gaia-icons/gaia-icons.js"></script>
-		<script defer src="../../components/gaia-header/dist/gaia-header.js"></script>
-		<script defer src="../../components/gaia-component/gaia-component.js"></script>
-		<script defer src="../../components/gaia-list/gaia-list.js"></script>
-		<script defer src="/utils.js"></script>
-		<script defer src="/event_dispatcher.js"></script>
-		<script defer src="/glue/protocol_helper.js"></script>
-		<script defer src="controller.js"></script>
-		<script defer src="list.js"></script>
+		<script defer src="/contacts/app/components/gaia-icons/gaia-icons.js"></script>
+		<script defer src="/contacts/app/components/gaia-header/dist/gaia-header.js"></script>
+		<script defer src="/contacts/app/components/gaia-component/gaia-component.js"></script>
+		<script defer src="/contacts/app/components/gaia-list/gaia-list.js"></script>
+		<script defer src="/contacts/app/utils.js"></script>
+		<script defer src="/contacts/app/event_dispatcher.js"></script>
+		<script defer src="/contacts/app/glue/protocol_helper.js"></script>
+		<script defer src="/contacts/app/views/list/controller.js"></script>
+		<script defer src="/contacts/app/views/list/list.js"></script>
 	</head>
 	<body class="theme-communications">
 		<gaia-header>
       <h1>List</h1>
-      <a href="../edit" data-icon="add-contact"></a>
+      <a href="/contacts/app/views/edit/index.html" data-icon="add-contact"></a>
     </gaia-header>
     <gaia-list></gaia-list>
 	</body>

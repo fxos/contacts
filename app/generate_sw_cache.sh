@@ -6,9 +6,9 @@ find . -type f |
 while read i; do
   if [ "${i:2}" != "$(basename $0)" ]; then
     if [[ $i == \./* ]]; then
-      echo "'/${i:2}',"
+      echo "'/contacts/app/${i:2}',"
     else
-      echo "'/$i',"
+      echo "'/contacts/app/$i',"
     fi
   fi
 done

@@ -7,7 +7,7 @@
 
   var ContactEditController = function () {
     this.protocol = new IPDLProtocol(
-      'contactEdit', new SharedWorker('/lib/db_worker.js')
+      'contactEdit', new SharedWorker('/contacts/app/lib/db_worker.js')
     );
   };
 
