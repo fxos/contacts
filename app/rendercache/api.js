@@ -1,6 +1,6 @@
 'use strict';
 
-function RenderCacheAPI(worker) {
+function RenderCacheAPI(theWorker) {
   this.protocol = new IPDLProtocol('renderCache', worker);
   this.protocol.recvSaved = this.onSaved;
 };
@@ -22,3 +22,8 @@ RenderCacheAPI.prototype.onSaved = function(resolve, reject, args) {
   localStorage.setItem('rendercache', args.url);
   resolve();
 };
+
+var worker = navigator.serviceWorker.controller;
+if (worker) {
+  window.renderCache = new RenderCacheAPI(worker);
+}

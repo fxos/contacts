@@ -70,6 +70,7 @@ function getContactName(contact) {
 }
 
 onDomReady().then(function() {
+  importScripts('/contacts/app/rendercache/api.js');
   controller = new ContactListController();
   // Re-render content once contact list is updated
   controller.addEventListener('contactchange', render);
