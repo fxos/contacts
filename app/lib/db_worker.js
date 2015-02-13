@@ -7,10 +7,10 @@
   'use strict';
 
   importScripts(
-    '/glue/protocol_helper.js',
-    '/api/pouchdb.js',
-    '/event_dispatcher.js',
-    '/api/mozcontacts.js'
+    '/contacts/app/glue/protocol_helper.js',
+    '/contacts/app/api/pouchdb.js',
+    '/contacts/app/event_dispatcher.js',
+    '/contacts/app/api/mozcontacts.js'
   );
 
   const protocols = {

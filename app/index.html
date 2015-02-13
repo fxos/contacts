@@ -4,12 +4,12 @@
 		<meta charset="utf-8">
 		<title>Contacts Desktop View</title>
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
-		<link rel="stylesheet" href="components/base/base.css">
-		<link rel="stylesheet" href="components/gaia-theme/gaia-theme.css">
-		<link rel="stylesheet" href="components/gaia-fonts/style.css">
-		<link rel="stylesheet" href="components/gaia-icons/gaia-icons.css">
-		<script defer src="../../components/gaia-header/dist/gaia-header.js"></script>
-		<script defer src="index.js"></script>
+		<link rel="stylesheet" href="/contacts/app/components/base/base.css">
+		<link rel="stylesheet" href="/contacts/app/components/gaia-theme/gaia-theme.css">
+		<link rel="stylesheet" href="/contacts/app/components/gaia-fonts/style.css">
+		<link rel="stylesheet" href="/contacts/app/components/gaia-icons/gaia-icons.css">
+		<script defer src="/contacts/app/components/gaia-header/dist/gaia-header.js"></script>
+		<script defer src="/contacts/app/index.js"></script>
 		<style>
 
 			* {
@@ -60,15 +60,15 @@
 	<body class="theme-communications">
 		<gaia-header>
 			<h1>Contacts</h1>
-			<a href="add" data-icon="add-contact"></a>
+			<a href="/contacts/app/views/edit/index.html" data-icon="add-contact"></a>
 			<button data-icon="settings"></button>
 		</gaia-header>
 		<div class="main">
 			<div class="col col-aside">
-				<iframe class="frame-list" src="views/list?chromeless"></iframe>
+				<iframe class="frame-list" src="/contacts/app/views/list/index.html?chromeless"></iframe>
 			</div>
 			<div class="col col-main">
-				<iframe class="frame-detail" src="views/detail?chromeless"></iframe>
+				<iframe class="frame-detail" src="/contacts/app/views/detail/index.html?chromeless"></iframe>
 			</div>
 		</div>
 	</body>

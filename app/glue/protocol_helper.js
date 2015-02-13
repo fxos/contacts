@@ -76,9 +76,9 @@
 //  };
 //
 
-importScripts('/glue/ipdl.js');
-importScripts('/glue/bridge.js');
-importScripts('/glue/protocol.js');
+importScripts('/contacts/app/glue/ipdl.js');
+importScripts('/contacts/app/glue/bridge.js');
+importScripts('/contacts/app/glue/protocol.js');
 
 var IPDLProtocol = function(name, target) {
   var ipdl = new IPDL(name);
