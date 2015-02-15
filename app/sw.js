@@ -1,9 +1,9 @@
 'use strict';
 
-importScripts('/contacts/app/sw-utils.js');
+importScripts('/contacts/app/sw-utils.js',
+ '/contacts/app/rendercache/worker_api.js');
 
 var worker = new ServiceWorker();
-var renderCache;
 
 const OFFLINE_CACHE = 'offline-cache-v0';
 
@@ -26,8 +26,6 @@ worker.oninstall = function(e) {
 
 worker.onactivate = function(e) {
   debug('onactivate');
-  importScripts('/contacts/app/rendercache/worker_api.js');
-  renderCache = new RenderCacheWorker();
 };
 
 worker.onfetch = function(e) {

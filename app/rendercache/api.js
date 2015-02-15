@@ -1,7 +1,7 @@
 'use strict';
 
 function RenderCacheAPI(theWorker) {
-  this.protocol = new IPDLProtocol('renderCache', worker);
+  this.protocol = new IPDLProtocol('renderCache', theWorker);
   this.protocol.recvSaved = this.onSaved;
 };
 

@@ -55,3 +55,5 @@ RenderCacheWorker.prototype.match = function(url) {
     return cache.match(url);
   });
 }
+
+var renderCache = new RenderCacheWorker();
