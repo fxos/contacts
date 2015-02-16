@@ -25,4 +25,20 @@
       document.addEventListener('DOMContentLoaded', resolve);
     });
   };
+
+  exports.getSWInstance = function() {
+    if (navigator.serviceWorker.controller) {
+      return Promise.resolve(navigator.serviceWorker.controller);
+    }
+    return navigator.serviceWorker.getRegistrations().then( r => {
+      var service = document.location.toString();
+      r.forEach(registration => {
+        if (service.starsWith(registration.scope) && registration.active) {
+          return Promise.resolve(registration.active);
+        }
+      });
+
+      return Promise.reject('Could not find ServiceWorker');
+    });
+  }
 })(window);
