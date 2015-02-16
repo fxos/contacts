@@ -35,7 +35,8 @@ worker.onfetch = function(e) {
   e.respondWith(
     renderCache.match(url).then(function(response) {
       if (response) {
-        return response;
+        debug('returning rendered content previously cached for: ' + url);
+        return Promise.resolve(response);
       }
 
       if (url.indexOf('?') != -1) {
