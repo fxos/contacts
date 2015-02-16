@@ -1,0 +1,11 @@
+protocol PSyncManager
+{
+  sharedworker:
+    StartSync(dbName, dbRemoteEndpoint);
+    StopSync(dbName, dbRemoteEndpoint);
+
+  window:
+    onChangesDetected(e);
+    onSyncSucceeded(e);
+    onSyncFailed(e);
+};

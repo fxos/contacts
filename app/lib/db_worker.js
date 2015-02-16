@@ -10,6 +10,7 @@
     '/contacts/app/glue/protocol_helper.js',
     '/contacts/app/api/pouchdb.js',
     '/contacts/app/event_dispatcher.js',
+    '/contacts/app/app_config.js',
     '/contacts/app/api/mozcontacts.js'
   );
 
