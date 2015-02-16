@@ -30,7 +30,7 @@ function onSaveClick() {
   var data = getFormData();
   controller.save(data).then(function(contact) {
     debug('Contact saved successfully', data);
-    document.location = 'views/detail/#/' + contact.id;
+    document.location = 'views/detail/index.html#/' + contact.id;
   }, function() {
     debug('Error occurred while saving contact', data);
   });
