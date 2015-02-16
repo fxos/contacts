@@ -3,7 +3,15 @@
 <head lang="en">
   <meta charset="UTF-8">
   <title>Fake Worker</title>
+  <script src="/contacts/app/app_config.js"></script>
   <script src="/contacts/app/utils.js"></script>
+  <script src="/contacts/app/glue/utils/uuid.js"></script>
+  <script src="/contacts/app/glue/ipdl_parser.js"></script>
+  <script src="/contacts/app/glue/ipdl.js"></script>
+  <script src="/contacts/app/glue/bridge.js"></script>
+  <script src="/contacts/app/glue/message.js"></script>
+  <script src="/contacts/app/glue/store.js"></script>
+  <script src="/contacts/app/glue/protocol.js"></script>
   <script src="/contacts/app/glue/protocol_helper.js"></script>
 </head>
 <script>
@@ -12,6 +20,8 @@
   var workerId = decodeURIComponent(
     document.location.search.substring(1).split('=')[1]
   );
+
+  document.title = workerId;
 
   document.addEventListener('DOMContentLoaded', function() {
     var broadcastChannel = new BroadcastChannel(workerId);

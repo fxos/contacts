@@ -1,5 +1,5 @@
 /* global IPDLProtocol,
-          EventDispatcher
+          BaseController
 */
 
 /* exported ContactDetailsController */
@@ -8,7 +8,7 @@
   'use strict';
 
   var ContactDetailsController = function () {
-    EventDispatcher.mixin(this, ['contactchange']);
+    BaseController.call(this, ['contactchange']);
 
     this.protocol = new IPDLProtocol(
       'contactDetails', new SharedWorker('lib/db_worker.js')
@@ -16,6 +16,7 @@
 
     this.protocol.recvContactChange = this.onContactChange.bind(this);
   };
+  ContactDetailsController.prototype = Object.create(BaseController.prototype);
 
   ContactDetailsController.prototype.get = function(id) {
     return this.protocol.sendGet(id);

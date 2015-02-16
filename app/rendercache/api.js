@@ -32,7 +32,10 @@ RenderCacheAPI.prototype.onSaved = function(resolve, reject, args) {
   resolve();
 };
 
-var worker = navigator.serviceWorker.controller;
-if (worker) {
-  window.renderCache = new RenderCacheAPI(worker);
-}
+var worker = null;
+getSWInstance().then(w => {
+  worker = w;
+  if (worker) {
+    window.renderCache = new RenderCacheAPI(worker);
+  }
+});
