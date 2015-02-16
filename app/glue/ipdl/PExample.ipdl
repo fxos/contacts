@@ -1,8 +1,0 @@
-
-protocol PExample
-{
-  worker:
-    test();
-
-  window:    
-};

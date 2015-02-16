@@ -11,7 +11,7 @@
     EventDispatcher.mixin(this, ['contactchange']);
 
     this.protocol = new IPDLProtocol(
-      'contactDetails', new SharedWorker('/contacts/app/lib/db_worker.js')
+      'contactDetails', new SharedWorker('lib/db_worker.js')
     );
 
     this.protocol.recvContactChange = this.onContactChange.bind(this);

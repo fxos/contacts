@@ -42,7 +42,7 @@ function render() {
     contacts.forEach(function(contact) {
       var el = document.createElement('a');
       el.textContent = getContactName(contact);
-      el.href = '/contacts/app/views/detail/index.html#/' + contact._id;
+      el.href = 'views/detail/index.html#/' + contact._id;
       frag.appendChild(el);
     });
 
@@ -70,6 +70,7 @@ function getContactName(contact) {
 }
 
 onDomReady().then(function() {
+  importScripts('rendercache/api.js');
   controller = new ContactListController();
   // Re-render content once contact list is updated
   controller.addEventListener('contactchange', render);
