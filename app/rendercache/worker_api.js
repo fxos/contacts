@@ -1,45 +1,51 @@
 'use strict';
 
+/*global Server, renderCacheContract, debug, normalizeUrl, caches, Response*/
+
 importScripts('/contacts/app/sw-utils.js');
-importScripts('/contacts/app/glue/protocol_helper.js');
+importScripts('/contacts/app/rendercache/contract.js');
+importScripts('/contacts/app/components/runtime-bridge/server.js');
 
 var CACHE = 'render-cache-v0';
 
+console.log('TTTTT', renderCacheContract);
+
 function RenderCacheWorker() {
-  this.protocol = new IPDLProtocol('renderCache');
-  this.protocol.recvSave = this.save.bind(this);
-  this.protocol.recvEvict = this.evict;
-};
+  this.protocol = new Server(renderCacheContract, {
+    save: this.save.bind(this),
+    evict: this.evict.bind(this)
+  });
+}
 
-RenderCacheWorker.prototype.save = function(resolve, reject, args) {
-  var url = args.url;
+RenderCacheWorker.prototype.save = function(url, markup) {
+  return new Promise((resolve, reject) => {
+    debug('Got save with ' + url);
 
-  debug('Got save with ' + url);
+    if (!url || !markup) {
+      debug('Invalid cache');
+      reject();
+      return;
+    }
 
-  if (!url || !args.markup) {
-    debug('Invalid cache');
-    reject();
-    return;
-  }
+    var normalizedUrl = normalizeUrl(url);
 
-  var normalizedUrl = normalizeUrl(url);
+    debug('Normalized URL ' + normalizedUrl);
 
-  debug('Normalized URL ' + normalizedUrl);
+    var self = this;
 
-  var self = this;
-
-  caches.open(CACHE).then(function(cache) {
-    return cache.put(normalizedUrl, new Response(args.markup, {
-      headers: {
-        'Content-Type': 'text/html'
-      }
-    }))
-  }).then(function() {
-    self.protocol.sendSaved(url);
-    resolve();
-  }).catch(function(error) {
-    debug('Could not save cache for ' + normalizedUrl + ' ' + error);
-    reject();
+    caches.open(CACHE).then(function(cache) {
+      return cache.put(normalizedUrl, new Response(markup, {
+        headers: {
+          'Content-Type': 'text/html'
+        }
+      }));
+    }).then(function() {
+      self.protocol.sendSaved(url);
+      resolve();
+    }).catch(function(error) {
+      debug('Could not save cache for ' + normalizedUrl + ' ' + error);
+      reject();
+    });
   });
 };
 
@@ -54,6 +60,6 @@ RenderCacheWorker.prototype.match = function(url) {
   return caches.open(CACHE).then(function(cache) {
     return cache.match(url);
   });
-}
+};
 
 var renderCache = new RenderCacheWorker();

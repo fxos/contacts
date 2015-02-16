@@ -1,6 +1,8 @@
 /* global IPDLProtocol,
           EventDispatcher,
-          AppConfig
+          AppConfig,
+          syncManagerContract,
+          Client
 */
 
 /* exported BaseController */
@@ -11,41 +13,37 @@
   var BaseController = function(allowedEvents) {
     EventDispatcher.mixin(this, allowedEvents);
 
-    this._syncProtocol = new IPDLProtocol(
-      'syncManager',
+    this.syncBridge = new Client(
+      syncManagerContract,
       new SharedWorker('lib/sync_manager_worker.js')
     );
-    this._syncProtocol.recvOnChangesDetected = function(resolve, reject, args) {
-      console.log(
-        'Sync (%s) detected changes.', args.e.dbRemoteEndpoint + args.e.dbName
-      );
-      resolve();
-    };
-    this._syncProtocol.recvOnSyncSucceeded = function(resolve, reject, args) {
-      console.log(
-        'Sync (%s) succeeded.', args.e.dbRemoteEndpoint + args.e.dbName
-      );
-    };
-    this._syncProtocol.recvOnSyncFailed = function(resolve, reject, args) {
-      console.log(
-        'Sync (%s) failed.', args.e.dbRemoteEndpoint + args.e.dbName
-      );
-    };
+
+    this.syncBridge.addEventListener('changesdetected', function(e) {
+      console.log('Sync (%s) detected changes.', e.data);
+    });
+
+    this.syncBridge.addEventListener('syncsucceeded', function(e) {
+      console.log('Sync (%s) succeeded.', e.data);
+    });
+
+    this.syncBridge.addEventListener('syncfailed', function(data) {
+      console.log('Sync (%s) failed.', data);
+    });
 
     this._toggleSync = this._toggleSync.bind(this);
     document.addEventListener('visibilitychange', this._toggleSync);
 
-    this._toggleSync();
+    // this._toggleSync();
   };
 
   BaseController.prototype._toggleSync = function() {
     if (document.hidden) {
-      this._syncProtocol.sendStopSync(
+      this.syncBridge.stopSync(
         AppConfig.databases.contacts.name,
         AppConfig.databases.contacts.remoteEndPoint
       );
     } else {
-      this._syncProtocol.sendStartSync(
+      this.syncBridge.startSync(
         AppConfig.databases.contacts.name,
         AppConfig.databases.contacts.remoteEndPoint
       );

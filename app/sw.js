@@ -1,7 +1,14 @@
 'use strict';
 
-importScripts('/contacts/app/sw-utils.js',
- '/contacts/app/rendercache/worker_api.js');
+/*13413f*/
+
+/*global debug, caches, ServiceWorker, kCacheFiles, renderCache, Response*/
+
+
+importScripts(
+  '/contacts/app/sw-utils.js',
+  '/contacts/app/rendercache/worker_api.js'
+);
 
 var worker = new ServiceWorker();
 

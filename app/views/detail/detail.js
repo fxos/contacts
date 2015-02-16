@@ -51,22 +51,25 @@ function render() {
   var id = getContactId();
 
   controller.get(id).then(function(contact) {
+    if (!contact) { return; }
     debug('Contact retrieved successfully', contact);
     activeContact = contact;
     els.firstName.textContent = getContactName(activeContact);
     document.body.classList.add('rendered');
     renderCache.saveCurrent().then(() => {
       debug('Content saved');
-    })
+    });
   }, function() {
     debug('Error occurred while retrieving contact by id', id);
   });
 }
 
 onDomReady().then(function() {
+  debug('dom ready');
+
   controller = new ContactDetailsController();
   // Re-render content once contact list is updated
-  controller.addEventListener('contactchange', render);
+  // controller.addEventListener('contactchange', render);
 
   els.removeContactButton.addEventListener('click', function() {
     if (window.confirm('Delete contact?')) {

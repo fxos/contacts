@@ -1,9 +1,14 @@
 'use strict';
 
+/*global
+renderCacheContract,
+Client
+*/
+
 function RenderCacheAPI(theWorker) {
-  this.protocol = new IPDLProtocol('renderCache', theWorker);
+  this.protocol = new Client(renderCacheContract, theWorker);
   this.protocol.recvSaved = this.onSaved;
-};
+}
 
 RenderCacheAPI.prototype.save = function(url, markup) {
   // debug('Sending save cache for ' + url);

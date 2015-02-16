@@ -1,21 +1,24 @@
 /* global importScripts,
-          IPDLProtocol,
+          syncManagerContract,
           myPouch,
+          Server,
           Map
 */
 
 (function() {
   'use strict';
 
-  importScripts(
-    '/contacts/app/glue/protocol_helper.js',
-    '/contacts/app/api/pouchdb.js',
-    '/contacts/app/app_config.js'
-  );
+  importScripts('/contacts/app/components/runtime-bridge/server.js');
+  importScripts('/contacts/app/lib/sync_manager_contract.js');
+  importScripts('/contacts/app/api/pouchdb.js');
+  importScripts('/contacts/app/app_config.js');
 
   const DB_SYNC_INTERVAL = 2000;
 
-  const protocol = new IPDLProtocol('syncManager');
+  const bridge = new Server(syncManagerContract, {
+    startSync: startSync,
+    stopSync: stopSync
+  });
 
   const syncHandles = new Map();
 
@@ -31,78 +34,81 @@
     }
   }
 
-  protocol.recvStartSync = function(resolve, reject, args) {
-    try {
-      ensureValidDBName(args.dbName);
-      ensureValidDBRemoteEndpoint(args.dbRemoteEndpoint);
+  function startSync(dbName, dbRemoteEndpoint) {
+    return new Promise((resolve, reject) => {
+      try {
+        ensureValidDBName(dbName);
+        ensureValidDBRemoteEndpoint(dbRemoteEndpoint);
 
-      var remoteDBAddress = args.dbRemoteEndpoint + args.dbName;
-      if (syncHandles.has(remoteDBAddress)) {
-        resolve();
-        return;
-      }
-
-      var syncInterval = typeof args.interval === 'number' ?
-        args.interval : DB_SYNC_INTERVAL;
-
-      var syncHandle = null;
-
-      syncHandles.set(remoteDBAddress, setInterval(function() {
-        // Check if previous sync still in progress
-        if (syncHandle) {
+        var remoteDBAddress = dbRemoteEndpoint + dbName;
+        if (syncHandles.has(remoteDBAddress)) {
+          resolve();
           return;
         }
 
-        syncHandle = myPouch.sync(
-          args.dbName, args.dbRemoteEndpoint + args.dbName
-        ).
-        on('change', function() {
-          protocol.sendOnChangesDetected({
-            dbName: args.dbName,
-            dbRemoteEndpoint: args.dbRemoteEndpoint
-          });
-        }).
-        on('complete', function() {
-          protocol.sendOnSyncSucceeded({
-            dbName: args.dbName,
-            dbRemoteEndpoint: args.dbRemoteEndpoint
-          });
-          syncHandle = null;
-        }).
-        on('error', function() {
-          protocol.sendOnSyncFailed({
-            dbName: args.dbName,
-            dbRemoteEndpoint: args.dbRemoteEndpoint
-          });
-          syncHandle = null;
-        });
-      }, syncInterval));
+        var syncInterval = DB_SYNC_INTERVAL;
 
-      resolve();
-    } catch(e) {
-      reject(e);
-    }
-  };
+        var syncHandle = null;
 
-  protocol.recvStopSync = function(resolve, reject, args) {
-    try {
-      ensureValidDBName(args.dbName);
-      ensureValidDBRemoteEndpoint(args.dbRemoteEndpoint);
+        syncHandles.set(remoteDBAddress, setInterval(function() {
+          // Check if previous sync still in progress
+          if (syncHandle) {
+            return;
+          }
 
-      var remoteDBAddress = args.dbRemoteEndpoint + args.dbName;
-      if (!syncHandles.has(remoteDBAddress)) {
+          syncHandle = myPouch.sync(
+            dbName, dbRemoteEndpoint + dbName
+          ).
+          on('change', function() {
+            bridge.broadcast('changesdetected', {
+              dbName: dbName,
+              dbRemoteEndpoint: dbRemoteEndpoint
+            });
+          }).
+          on('complete', function() {
+            bridge.broadcast('syncsucceeded', {
+              dbName: dbName,
+              dbRemoteEndpoint: dbRemoteEndpoint
+            });
+            syncHandle = null;
+          }).
+          on('error', function() {
+            bridge.broadcast('syncfailed', {
+              dbName: dbName,
+              dbRemoteEndpoint: dbRemoteEndpoint
+            });
+            syncHandle = null;
+          });
+        }, syncInterval));
+
         resolve();
-        return;
+      } catch(e) {
+        reject(e);
       }
+    });
+  }
 
-      var syncHandle = syncHandles.get(remoteDBAddress);
+  function stopSync(dbName, dbRemoteEndpoint) {
+    return new Promise((resolve, reject) => {
+      try {
+        ensureValidDBName(dbName);
+        ensureValidDBRemoteEndpoint(dbRemoteEndpoint);
 
-      clearInterval(syncHandle);
-      syncHandles.delete(remoteDBAddress);
+        var remoteDBAddress = dbRemoteEndpoint + dbName;
+        if (!syncHandles.has(remoteDBAddress)) {
+          resolve();
+          return;
+        }
 
-      resolve();
-    } catch(e) {
-      reject(e);
-    }
-  };
+        var syncHandle = syncHandles.get(remoteDBAddress);
+
+        clearInterval(syncHandle);
+        syncHandles.delete(remoteDBAddress);
+
+        resolve();
+      } catch(e) {
+        reject(e);
+      }
+    });
+  }
 })();
