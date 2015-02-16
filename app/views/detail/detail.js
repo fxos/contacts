@@ -4,7 +4,7 @@
 
 (function() {
 
-var debug = 0 ? console.log.bind(console, '[LIST]') : function(){};
+var debug = 1 ? console.log.bind(console, '[DETAIL]') : function(){};
 var chromeless = !!~location.search.indexOf('chromeless');
 
 var els = {
@@ -45,12 +45,19 @@ function getContactName(contact) {
 }
 
 function render() {
+  if (document.body.classList.contains('rendered')) {
+    return;
+  }
   var id = getContactId();
 
   controller.get(id).then(function(contact) {
     debug('Contact retrieved successfully', contact);
     activeContact = contact;
     els.firstName.textContent = getContactName(activeContact);
+    document.body.classList.add('rendered');
+    renderCache.saveCurrent().then(() => {
+      debug('Content saved');
+    })
   }, function() {
     debug('Error occurred while retrieving contact by id', id);
   });
@@ -65,7 +72,7 @@ onDomReady().then(function() {
     if (window.confirm('Delete contact?')) {
       controller.remove(activeContact).then(function() {
         debug('Contact removed successfully', activeContact._id);
-        document.location = '/views/list/';
+        document.location = '/views/list/index.html';
       }, function() {
         debug('Error occurred while removing contact', activeContact._id);
       });
