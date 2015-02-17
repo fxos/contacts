@@ -26,13 +26,20 @@ function render() {
 
 function onSaveClick() {
   var data = getFormData();
-  controller.save(data).then(function(contact) {
-    debug('Contact saved successfully', data);
-    var link = document.getElementById('link');
-    link.href = 'views/detail/index.html#/' + contact.id;
-    link.click();
-  }, function() {
-    debug('Error occurred while saving contact', data);
+  // XXX: For a proper view separation, evicting the list cache
+  // should happen at sharedworker level, oncontactchange, but
+  // we don't have the time to implemente this. With future versions
+  // of cache exposed to sharedworkers, we can do this on that 'server'
+  // side.
+  renderCache.evictList().then(() => {
+    controller.save(data).then(function(contact) {
+      debug('Contact saved successfully', data);
+      var link = document.getElementById('link');
+      link.href = 'views/detail/index.html#/' + contact.id;
+      link.click();
+    }, function() {
+      debug('Error occurred while saving contact', data);
+    });
   });
 }
 
