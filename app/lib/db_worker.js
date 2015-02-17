@@ -1,58 +1,60 @@
-/* global importScripts,
-          IPDLProtocol,
-          mozContacts
+/* global
+importScripts,
+mozContacts,
+contracts,
+Server
 */
 
 (function() {
   'use strict';
 
-  importScripts(
-    '/contacts/app/glue/protocol_helper.js',
-    '/contacts/app/api/pouchdb.js',
-    '/contacts/app/event_dispatcher.js',
-    '/contacts/app/app_config.js',
-    '/contacts/app/api/mozcontacts.js'
-  );
+  importScripts('/contacts/app/api/pouchdb.js');
+  importScripts('/contacts/app/event_dispatcher.js');
+  importScripts('/contacts/app/app_config.js');
+  importScripts('/contacts/app/api/mozcontacts.js');
+  importScripts('/contacts/app/lib/db_worker_contracts.js');
+  importScripts('/contacts/app/components/runtime-bridge/server.js');
 
-  const protocols = {
-    list: new IPDLProtocol('contactList'),
-    details: new IPDLProtocol('contactDetails'),
-    edit: new IPDLProtocol('contactEdit')
+  var bridges = {
+    edit: new Server(contracts.edit, { save: save }),
+    list: new Server(contracts.list, { getAll: getAll }),
+    details: new Server(contracts.detail, {
+      get: getContact,
+      remove: removeContact
+    })
   };
 
-  /* List protocol methods */
-  protocols.list.recvGetAll = function(resolve, reject, args) {
-    mozContacts.getAll().then(resolve, reject);
-  };
+  function getAll() {
+    return mozContacts.getAll();
+  }
 
-  /* Edit protocol methods */
-  protocols.edit.recvSave =  function(resolve, reject, args) {
-    var contact = args.contact;
-    mozContacts.save({
+  function save(contact) {
+    return mozContacts.save({
       givenName: contact.givenName ? [contact.givenName] : [],
       familyName: contact.familyName ? [contact.familyName] : [],
       email: contact.email ? [contact.email] : [],
       tel: contact.tel ? [{ value: contact.tel }] : []
-    }).then(resolve, reject);
-  };
+    });
+  }
 
-  /* Details protocol methods */
-  protocols.details.recvGet =  function(resolve, reject, args) {
-    mozContacts.find({
-      filterBy: ['id'],
-      filterOp: 'equals',
-      filterValue: args.id
-    }).then(function(results) {
-      resolve(results && results.length > 0 ? results[0] : null);
-    }, reject);
-  };
+  function getContact(id) {
+    return new Promise((resolve, reject) => {
+      mozContacts.find({
+        filterBy: ['id'],
+        filterOp: 'equals',
+        filterValue: id
+      }).then(function(results) {
+        resolve(results && results.length > 0 ? results[0] : null);
+      }, reject);
+    });
+  }
 
-  protocols.details.recvRemove =  function(resolve, reject, args) {
-    return mozContacts.remove(args.contact).then(resolve, reject);
-  };
+  function removeContact(contact) {
+    return mozContacts.remove(contact);
+  }
 
   mozContacts.addEventListener('contactchange', function(e) {
-    protocols.list.sendContactChange(e);
-    protocols.details.sendContactChange(e);
+    bridges.list.broadcast('contactchange', e);
+    bridges.details.broadcast('contactchange', e);
   });
 })();

@@ -1,5 +1,7 @@
 /* global IPDLProtocol,
-          BaseController
+          BaseController,
+          contracts,
+          Client
 */
 
 /* exported ContactEditController */
@@ -9,15 +11,14 @@
 
   var ContactEditController = function () {
     BaseController.call(this);
-
-    this.protocol = new IPDLProtocol(
-      'contactEdit', new SharedWorker('lib/db_worker.js')
-    );
+    var worker = new SharedWorker('lib/db_worker.js');
+    this.bridge = new Client(contracts.edit, worker);
   };
+
   ContactEditController.prototype = Object.create(BaseController.prototype);
 
   ContactEditController.prototype.save = function(contact) {
-    return this.protocol.sendSave(contact);
+    return this.bridge.save(contact);
   };
 
   exports.ContactEditController = ContactEditController;

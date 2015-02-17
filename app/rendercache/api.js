@@ -1,13 +1,18 @@
 'use strict';
 
+/*global
+renderCacheContract,
+Client
+*/
+
 function RenderCacheAPI(theWorker) {
-  this.protocol = new IPDLProtocol('renderCache', theWorker);
-  this.protocol.recvSaved = this.onSaved;
-};
+  this.bridge = new Client(renderCacheContract, theWorker);
+  this.bridge.addEventListener('saved', this.onSaved.bind(this));
+}
 
 RenderCacheAPI.prototype.save = function(url, markup) {
   // debug('Sending save cache for ' + url);
-  return this.protocol.sendSave(url, markup);
+  return this.bridge.save(url, markup);
 };
 
 // Utility method to save the current document
@@ -19,7 +24,7 @@ RenderCacheAPI.prototype.saveCurrent = function() {
 
 RenderCacheAPI.prototype.evict = function(url) {
   // debug('Sending evict cache for ' + url);
-  return this.protocol.sendEvict(url);
+  return this.bridge.evict(url);
 };
 
 RenderCacheAPI.prototype.evictCurrent = function() {
@@ -27,9 +32,8 @@ RenderCacheAPI.prototype.evictCurrent = function() {
   return this.evict(url);
 };
 
-RenderCacheAPI.prototype.onSaved = function(resolve, reject, args) {
+RenderCacheAPI.prototype.onSaved = function() {
   // debug('Cache saved for ' + args.url);
-  resolve();
 };
 
 var worker = null;

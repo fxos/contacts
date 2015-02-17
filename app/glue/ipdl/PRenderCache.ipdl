@@ -1,9 +1,0 @@
-protocol PRenderCache
-{
-  serviceworker:
-    Save(url, markup);
-    Evict(url);
-
-  window:
-    Saved(url);
-};

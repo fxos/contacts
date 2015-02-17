@@ -1,7 +1,0 @@
-protocol PContactEdit
-{
-  sharedworker:
-    Save(contact);
-
-  window:
-};

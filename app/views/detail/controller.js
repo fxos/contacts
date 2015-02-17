@@ -1,5 +1,7 @@
 /* global IPDLProtocol,
-          BaseController
+          BaseController,
+          contracts,
+          Client
 */
 
 /* exported ContactDetailsController */
@@ -9,31 +11,23 @@
 
   var ContactDetailsController = function () {
     BaseController.call(this, ['contactchange']);
-
-    this.protocol = new IPDLProtocol(
-      'contactDetails', new SharedWorker('lib/db_worker.js')
-    );
-
-    this.protocol.recvContactChange = this.onContactChange.bind(this);
+    var worker = new SharedWorker('lib/db_worker.js');
+    this.bridge = new Client(contracts.detail, worker);
+    this.bridge.addEventListener('contactchange', e => this.onContactChange(e));
   };
+
   ContactDetailsController.prototype = Object.create(BaseController.prototype);
 
   ContactDetailsController.prototype.get = function(id) {
-    return this.protocol.sendGet(id);
+    return this.bridge.get(id);
   };
 
   ContactDetailsController.prototype.remove = function(contact) {
-    return this.protocol.sendRemove(contact);
+    return this.bridge.remove(contact);
   };
 
-  ContactDetailsController.prototype.onContactChange =
-  function(resolve, reject, args) {
-    try {
-      this.dispatchEvent('contactchange', args.e);
-      resolve();
-    } catch(e) {
-      reject(e);
-    }
+  ContactDetailsController.prototype.onContactChange = function(e) {
+    this.dispatchEvent('contactchange', e.data);
   };
 
   exports.ContactDetailsController = ContactDetailsController;
