@@ -40,7 +40,7 @@ RenderCacheWorker.prototype.save = function(url, markup) {
         }
       }));
     }).then(function() {
-      self.protocol.sendSaved(url);
+      self.protocol.broadcast('saved');
       resolve();
     }).catch(function(error) {
       debug('Could not save cache for ' + normalizedUrl + ' ' + error);
