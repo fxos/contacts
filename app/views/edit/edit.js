@@ -29,7 +29,7 @@ function onSaveClick() {
   controller.save(data).then(function(contact) {
     debug('Contact saved successfully', data);
     var link = document.getElementById('link');
-    link.href = 'views/detail/#/' + contact.id;
+    link.href = 'views/detail/index.html#/' + contact.id;
     link.click();
   }, function() {
     debug('Error occurred while saving contact', data);
