@@ -1,7 +1,7 @@
 /* global IPDLProtocol,
           BaseController,
           Client,
-          contracts
+          ListContract
 */
 
 /* exported ContactListController */
@@ -10,13 +10,13 @@
   'use strict';
 
   var ContactListController = function () {
-    BaseController.call(this, ['contactchange']);
+    BaseController.call(this, ['contactschanged']);
 
-    this.bridge = new Client(contracts.list,
-      new SharedWorker('lib/db_worker.js')
+    this.bridge = new Client(ListContract,
+      new Worker('workers/list/worker.js')
     );
 
-    this.bridge.addEventListener('contactchange', e => this.onContactChange(e));
+    this.bridge.addEventListener('contactschanged', e => this.onContactChange(e));
   };
 
   ContactListController.prototype = Object.create(BaseController.prototype);
@@ -27,7 +27,7 @@
 
   ContactListController.prototype.onContactChange = function(contact) {
     try {
-      this.dispatchEvent('contactchange', contact);
+      this.dispatchEvent('contactschanged', contact);
     } catch(e) {}
   };
 
