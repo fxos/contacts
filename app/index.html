@@ -1,78 +1,81 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Contacts Desktop View</title>
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
-		<link rel="stylesheet" href="/contacts/app/components/base/base.css">
-		<link rel="stylesheet" href="/contacts/app/components/gaia-theme/gaia-theme.css">
-		<link rel="stylesheet" href="/contacts/app/components/gaia-fonts/style.css">
-		<link rel="stylesheet" href="/contacts/app/components/gaia-icons/gaia-icons.css">
-    <script defer src="/contacts/app/components/gaia-header/dist/gaia-header.js"></script>
-    <script defer src="/contacts/app/utils.js"></script>
-    <script defer src="/contacts/app/components/runtime-bridge/client.js"></script>
-    <script defer src="/contacts/app/rendercache/contract.js"></script>
-		<script defer src="/contacts/app/index.js"></script>
-		<style>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+    <base href="/contacts/app/">
 
-			* {
-				margin: 0;
-				padding: 0;
-				border: 0;
-			}
+    <title>Contacts Desktop View</title>
+    <link rel="stylesheet" href="components/base/base.css">
+    <link rel="stylesheet" href="components/gaia-theme/gaia-theme.css">
+    <link rel="stylesheet" href="components/gaia-fonts/style.css">
+    <link rel="stylesheet" href="components/gaia-icons/gaia-icons.css">
+    <script defer src="components/gaia-header/dist/gaia-header.js"></script>
+    <script defer src="utils.js"></script>
+    <script defer src="components/runtime-bridge/client.js"></script>
+    <script defer src="rendercache/contract.js"></script>
+    <script defer src="index.js"></script>
+    <style>
 
-			iframe {
-				position: absolute;
-				top: 0;
-				left: 0;
-			  display: block;
-			  width: 100%;
-			  height: 100%;
-			}
+      * {
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
 
-			html {
-				height: 100%;
-			}
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
 
-			body {
-				display: flex;
-				flex-direction: column;
-				height: 100%;
-			}
+      html {
+        height: 100%;
+      }
 
-			.main {
-				flex: 1;
-				display: flex;
-			}
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
 
-			.col {
-				position: relative;
-			}
+      .main {
+        flex: 1;
+        display: flex;
+      }
 
-			.col-aside {
-				width: 33.33%;
-				border-right: solid 1px var(--border-color);
-			}
+      .col {
+        position: relative;
+      }
 
-			.col-main {
-				flex: 1;
-			}
+      .col-aside {
+        width: 33.33%;
+        border-right: solid 1px var(--border-color);
+      }
 
-		</style>
-	</head>
-	<body class="theme-communications">
-		<gaia-header>
-			<h1>Contacts</h1>
-			<a href="/contacts/app/views/edit/index.html" data-icon="add-contact"></a>
-			<button data-icon="settings"></button>
-		</gaia-header>
-		<div class="main">
-			<div class="col col-aside">
-				<iframe class="frame-list" src="/contacts/app/views/list/index.html?chromeless"></iframe>
-			</div>
-			<div class="col col-main">
-				<iframe class="frame-detail" src="/contacts/app/views/detail/index.html?chromeless"></iframe>
-			</div>
-		</div>
-	</body>
+      .col-main {
+        flex: 1;
+      }
+
+    </style>
+  </head>
+  <body class="theme-communications">
+    <gaia-header>
+      <h1></h1>
+      <a></a>
+      <button data-icon="settings"></button>
+    </gaia-header>
+
+    <div class="main">
+      <div class="col col-aside">
+        <iframe class="frame-list" src="views/list/index.html?chromeless"></iframe>
+      </div>
+      <div class="col col-main">
+        <iframe class="frame-detail" src="views/detail/index.html?chromeless"></iframe>
+      </div>
+    </div>
+  </body>
 </html>

@@ -36,7 +36,8 @@ RenderCacheAPI.prototype.onSaved = function() {
   // debug('Cache saved for ' + args.url);
 };
 
-var worker = navigator.serviceWorker.controller;
+var worker = navigator.serviceWorker ? navigator.serviceWorker.controller
+                                     : null;
 if (worker) {
   window.renderCache = new RenderCacheAPI(worker);
 }

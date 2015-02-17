@@ -4,23 +4,21 @@
 (function() {
 
 var debug = 1 ? console.log.bind(console, '[LIST]') : function(){};
-var chromeless = !!~location.search.indexOf('chromeless');
 var controller;
 
 var els = {
-  header: document.querySelector('gaia-header'),
   actionButton: document.querySelector('.action'),
   fields: document.querySelectorAll('gaia-text-input'),
-  save: document.querySelector('.save')
 };
 
 // Setup
-els.header.hidden = chromeless;
 render();
 
 // Events
 addEventListener('hashchange', render);
-els.save.addEventListener('click', onSaveClick);
+
+var target = document.querySelector('head > meta[name=action]');
+target.onclick = onSaveClick;
 
 function render() {
 
@@ -30,7 +28,9 @@ function onSaveClick() {
   var data = getFormData();
   controller.save(data).then(function(contact) {
     debug('Contact saved successfully', data);
-    document.location = 'views/detail/index.html#/' + contact.id;
+    var link = document.getElementById('link');
+    link.href = 'views/detail/#/' + contact.id;
+    link.click();
   }, function() {
     debug('Error occurred while saving contact', data);
   });

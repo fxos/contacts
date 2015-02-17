@@ -5,21 +5,20 @@
 (function() {
 
 var debug = 1 ? console.log.bind(console, '[DETAIL]') : function(){};
-var chromeless = !!~location.search.indexOf('chromeless');
 
 var els = {
-  header: document.querySelector('gaia-header'),
-  actionButton: document.querySelector('.action'),
   firstName: document.querySelector('.first-name'),
-  removeContactButton: document.querySelector('.remove-contact')
 };
 var controller, activeContact;
 
-// Setup
-els.header.hidden = chromeless;
-
 // Events
-addEventListener('hashchange', render);
+addEventListener('hashchange', function() {
+  if (document.body.classList.contains('rendered')) {
+    document.body.classList.remove('rendered');
+  }
+
+  render();
+});
 
 function getContactId() {
   return location.hash.slice(2);
@@ -55,8 +54,9 @@ function render() {
     debug('Contact retrieved successfully', contact);
     activeContact = contact;
     els.firstName.textContent = getContactName(activeContact);
+    document.title = els.firstName.textContent;
     document.body.classList.add('rendered');
-    renderCache.saveCurrent().then(() => {
+    renderCache && renderCache.saveCurrent().then(() => {
       debug('Content saved');
     });
   }, function() {
@@ -71,7 +71,8 @@ onDomReady().then(function() {
   // Re-render content once contact list is updated
   // controller.addEventListener('contactchange', render);
 
-  els.removeContactButton.addEventListener('click', function() {
+  var target = document.querySelector('head > meta[name=action]');
+  target.onclick = function(e) {
     if (window.confirm('Delete contact?')) {
       controller.remove(activeContact).then(function() {
         debug('Contact removed successfully', activeContact._id);
@@ -79,8 +80,10 @@ onDomReady().then(function() {
       }, function() {
         debug('Error occurred while removing contact', activeContact._id);
       });
+    } else {
+      e.stopImmediatePropagation();
     }
-  });
+  };
 
   render();
 });
