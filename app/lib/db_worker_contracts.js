@@ -38,13 +38,9 @@ var contracts = {
     name: 'edit',
 
     methods: {
-      get: {
-        args: [],
+      save: {
+        args: ['object'],
         returns: 'object'
-      },
-
-      remove: {
-        args: ['object']
       }
     },
 

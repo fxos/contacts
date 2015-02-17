@@ -11,7 +11,6 @@ var renderCacheContract = {
   },
 
   events: {
-    saved: 'string'
+    saved: 'undefined'
   }
 };
-
