@@ -8,8 +8,6 @@ importScripts('/contacts/app/components/runtime-bridge/server.js');
 
 var CACHE = 'render-cache-v0';
 
-console.log('TTTTT', renderCacheContract);
-
 function RenderCacheWorker() {
   this.protocol = new Server(renderCacheContract, {
     save: this.save.bind(this),
@@ -40,7 +38,9 @@ RenderCacheWorker.prototype.save = function(url, markup) {
         }
       }));
     }).then(function() {
-      self.protocol.sendSaved(url);
+      debug('Saved correctly, broadcasting');
+      self.protocol.broadcast('saved');
+      debug('Broadcasting done, resolving the promise');
       resolve();
     }).catch(function(error) {
       debug('Could not save cache for ' + normalizedUrl + ' ' + error);
@@ -49,14 +49,17 @@ RenderCacheWorker.prototype.save = function(url, markup) {
   });
 };
 
-RenderCacheWorker.prototype.evict = function(resolve, reject, args) {
-  debug('Got evict for ' + args.url);
-  resolve();
+RenderCacheWorker.prototype.evict = function(url) {
+  url = normalizeUrl(url);
+  debug('Got evict for ' + url);
+  return caches.open(CACHE).then(function(cache) {
+    return cache.delete(url);
+  });
 };
 
 RenderCacheWorker.prototype.match = function(url) {
   url = normalizeUrl(url);
-  // debug('Looking for ' + url + ' in render cache');
+  debug('[rendercache] Looking for ' + url + ' in render cache');
   return caches.open(CACHE).then(function(cache) {
     return cache.match(url);
   });

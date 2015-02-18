@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
     <base href="/contacts/app/">
 
-    <title>Contacts: List</title>
+    <title>List</title>
+    <meta name="action" content="icon=add-contact" href="views/edit/index.html" rel="next">
     <link rel="prerender" src="views/detail/index.html">
 
     <link rel="stylesheet" href="components/base/base.css">
     <link rel="stylesheet" href="components/gaia-fonts/style.css">
     <link rel="stylesheet" href="components/gaia-theme/gaia-theme.css">
-    <link rel="stylesheet" href="components/gaia-icons/gaia-icons.css">
     <link rel="stylesheet" href="views/list/list.css">
 
-    <script defer src="components/gaia-icons/gaia-icons.js"></script>
-    <script defer src="components/gaia-header/dist/gaia-header.js"></script>
     <script defer src="components/gaia-component/gaia-component.js"></script>
     <script defer src="components/gaia-list/gaia-list.js"></script>
     <script defer src="components/runtime-bridge/client.js"></script>
@@ -27,13 +25,14 @@
     <script defer src="lib/sync_manager_contract.js"></script>
     <script defer src="views/base_controller.js"></script>
     <script defer src="views/list/controller.js"></script>
+    <script defer src="rendercache/contract.js"></script>
+    <script defer src="rendercache/api.js"></script>
     <script defer src="views/list/list.js"></script>
+    <script defer src="views/server.js"></script>
   </head>
   <body class="theme-communications">
-    <gaia-header>
-      <h1>List</h1>
-      <a href="views/edit/index.html" data-icon="add-contact"></a>
-    </gaia-header>
-    <gaia-list></gaia-list>
+    <div class="wrapper">
+      <gaia-list></gaia-list>
+    </div>
   </body>
 </html>

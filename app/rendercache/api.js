@@ -27,6 +27,15 @@ RenderCacheAPI.prototype.evict = function(url) {
   return this.bridge.evict(url);
 };
 
+RenderCacheAPI.prototype.evictList = function() {
+  // XXX we shouldn't evit the contacts list always,
+  // but so far we will rebuild each time we have a change
+  var url = document.location.toString();
+  url = url.substr(0, url.indexOf('/', 7)) +
+   '/contacts/app/views/list/index.html';
+  return this.evict(url);
+}
+
 RenderCacheAPI.prototype.evictCurrent = function() {
   var url = document.location.toString();
   return this.evict(url);
@@ -36,10 +45,9 @@ RenderCacheAPI.prototype.onSaved = function() {
   // debug('Cache saved for ' + args.url);
 };
 
-var worker = null;
-getSWInstance().then(w => {
-  worker = w;
-  if (worker) {
-    window.renderCache = new RenderCacheAPI(worker);
-  }
-});
+var worker = navigator.serviceWorker ? navigator.serviceWorker.controller
+                                     : null;
+if (worker) {
+  window.renderCache = new RenderCacheAPI(worker);
+}
+

@@ -1,0 +1,25 @@
+{
+  "name": "runtime-bridge",
+  "version": "0.1.1",
+  "authors": [
+    "Wilson Page <wilsonpage@me.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "homepage": "https://github.com/gaia-components/runtime-bridge",
+  "_release": "0.1.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.1",
+    "commit": "0bbd99a292f2e603805ff4aa593d58e8d6e711b7"
+  },
+  "_source": "git://github.com/gaia-components/runtime-bridge.git",
+  "_target": "~0.1.1",
+  "_originalSource": "gaia-components/runtime-bridge"
+}

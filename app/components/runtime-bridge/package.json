@@ -1,0 +1,25 @@
+{
+  "name": "runtime-bridge",
+  "version": "0.1.1",
+  "homepage": "https://github.com/gaia-components/runtime-bridge",
+  "license": "MIT",
+  "main": "runtime-bridge.js",
+  "devDependencies": {
+    "karma": "^0.12.16",
+    "karma-firefox-launcher": "^0.1.3",
+    "karma-mocha": "^0.1.3",
+    "karma-sinon-chai": "^0.1.6",
+    "mozilla-download": "^0.4.3"
+  },
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start test/karma.conf.js --single-run",
+    "test-dev": "./node_modules/karma/bin/karma start test/karma.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gaia-components/runtime-bridge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gaia-components/runtime-bridge/issues"
+  }
+}

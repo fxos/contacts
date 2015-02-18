@@ -1,0 +1,50 @@
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.views {
+  position: absolute;
+  height: calc(100% - 3rem);
+  width: 100%;
+}
+
+iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+iframe.forward {
+  transform: translateX(99.99%);
+}
+
+iframe.current {
+  transform: translateX(0);
+}
+
+iframe.back {
+  transform: translateX(-99.99%);
+}
+
+
+.views[slow] iframe {
+  transition-duration: 3s;
+}
+
+.views[debug] iframe {
+  outline: 1rem solid red;
+  outline-offset: -1rem;
+}
+

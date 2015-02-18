@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
     <base href="/contacts/app/">
 
-    <title>Contacts: List</title>
+    <title></title>
+    <meta name="action" content="icon=delete" href="views/list/index.html" rel="prev">
+     <link rel="stylesheet" href="components/base/base.css">
     <link rel="stylesheet" href="components/base/base.css">
     <link rel="stylesheet" href="components/gaia-fonts/style.css">
     <link rel="stylesheet" href="components/gaia-theme/gaia-theme.css">
-    <link rel="stylesheet" href="components/gaia-icons/gaia-icons.css">
     <link rel="stylesheet" href="views/detail/detail.css">
 
-    <script defer src="components/gaia-icons/gaia-icons.js"></script>
-    <script defer src="components/gaia-header/dist/gaia-header.js"></script>
     <script defer src="components/runtime-bridge/client.js"></script>
     <script defer src="app_config.js"></script>
     <script defer src="utils.js"></script>
@@ -25,13 +24,9 @@
     <script defer src="rendercache/contract.js"></script>
     <script defer src="rendercache/api.js"></script>
     <script defer src="views/detail/detail.js"></script>
+    <script defer src="views/server.js"></script>
   </head>
   <body class="theme-communications">
-    <gaia-header>
-      <a class="action" href="views/list/index.html" data-icon="back"></a>
-      <h1>Detail</h1>
-      <button class="remove-contact" data-icon="delete"></button>
-    </gaia-header>
     <div class="content">
       <h1 class="first-name">First Name</h1>
     </div>

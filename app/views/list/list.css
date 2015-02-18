@@ -15,6 +15,11 @@ body {
   height: 100%;
 }
 
+.wrapper {
+  overflow-y: auto;
+  flex: 1;
+}
+
 gaia-list {
   display: block;
   flex: 1;
