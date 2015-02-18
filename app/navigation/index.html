@@ -17,16 +17,29 @@
     <script defer src="components/gaia-header/dist/gaia-header.js"></script>
     <script defer src="navigation/navigation.js"></script>
     <script defer src="navigation/events.js"></script>
+    <script defer src="navigation/account.js"></script>
+    <script defer src="app_config.js"></script>
+    <script defer src="event_dispatcher.js"></script>
+    <script defer src="components/fxa-relier-client/fxa-relier-client.js"></script>
+    <script defer src="fxa/accounts_client.js"></script>
+    <script defer src="async_storage.js"></script>
+    <script defer src="fxa/profile_storage.js"></script>
   </head>
 
   <body class="theme-communications">
     <gaia-header>
       <h1></h1>
+      <button id='fxa'>Login</button>
     </gaia-header>
 
     <div id="views" class="views">
       <iframe src="views/list/index.html" class="current"></iframe>
       <iframe class="forward"></iframe>
+    </div>
+
+    <div id="footer" class="hide">
+      <img id="user-image" class="avatar" src="navigation/images/default-no-profile-pic.png"/>
+      <p id="user-email" class="email">user@domain.org</p>
     </div>
   </body>
 </html>

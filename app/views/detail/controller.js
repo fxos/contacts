@@ -1,6 +1,5 @@
-/* global IPDLProtocol,
-          BaseController,
-          contracts,
+/* global BaseController,
+          Contracts,
           Client
 */
 

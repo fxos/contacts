@@ -1,12 +1,14 @@
 /* global myPouch,
-          EventDispatcher,
-          AppConfig
+   EventDispatcher,
+   AppConfig
 */
 
 /* exported mozContacts */
 
 (function(exports) {
   'use strict';
+
+  importScripts('/contacts/app/fxa/profile_storage.js');
 
   /**
    * Possible change reason type.
@@ -15,30 +17,45 @@
   const changeReason = {
     UPDATE: 'update',
     CREATE: 'create',
-    REMOVE: 'remove'
+    REMOVE: 'remove',
+    RESET: 'reset'
   };
 
   function onChange(reason, change) {
     exports.mozContacts.dispatchEvent('contactchange', {
-      contactID: change.id,
+      contactID: change ? change.id : null,
       reason: reason
     });
   }
 
   var db;
-  function ensureDB() {
-    if (!db) {
-      db = new myPouch(AppConfig.databases.contacts.name);
+  function ensureDB(newDbName) {
+    if (db) {
+      return Promise.resolve(db);
+    }
+    return ProfileStorage.get().then((profile) => {
+      var dbName;
+      if (profile && profile.user) {
+        dbName = profile.user;
+      } else {
+        dbName = AppConfig.databases.contacts.name;
+      }
+
+      if (newDbName && newDbName.length) {
+        dbName = newDbName;
+      }
+
+      db = new myPouch(dbName);
 
       db.changes({
         live: true
-      }).
-      on('create',  onChange.bind(null, changeReason.CREATE)).
-      on('update',  onChange.bind(null, changeReason.UPDATE)).
-      on('delete',  onChange.bind(null, changeReason.REMOVE));
-    }
+      })
+      .on('create',  onChange.bind(null, changeReason.CREATE))
+      .on('update',  onChange.bind(null, changeReason.UPDATE))
+      .on('delete',  onChange.bind(null, changeReason.REMOVE));
 
-    return db;
+      return db;
+    });
   }
 
   function find(options) {
@@ -47,22 +64,24 @@
       return Promise.reject('Only search by ID is supported!');
     }
 
-    ensureDB();
-    return db.allDocs({
-      include_docs: true,
-      key: options.filterValue
-    }).then(function(result) {
-      return result.rows.map(function(row) {
+    return ensureDB().then(() => {
+      return db.allDocs({
+        include_docs: true,
+        key: options.filterValue
+      });
+    }).then((result) => {
+      return result.rows.map((row) => {
         return row.doc;
       });
     });
   }
 
   function getAll(options) {
-    ensureDB();
-    options = options || {};
-    return db.allDocs({
-      include_docs: true
+    return ensureDB().then(() => {
+      options = options || {};
+      return db.allDocs({
+        include_docs: true
+      });
     }).then(result => {
       var docs = result.rows.map(entry => entry.doc);
       // Order them
@@ -81,56 +100,74 @@
   }
 
   function clear() {
-    ensureDB();
-    return db.destroy().then(function() {
-      return Promise.resolve();
+    return ensureDB().then(() => {
+      return db.destroy();
     });
   }
 
   function save(contact) {
-    ensureDB();
-    if (!contact._id) {
-      //contact = new mozContact(contact);
-      return db.post(contact);
-    } else {
-      return db.put(contact);
-    }
+    return ensureDB().then(() => {
+      if (!contact._id) {
+        //contact = new mozContact(contact);
+        return db.post(contact);
+      } else {
+        return db.put(contact);
+      }
+    });
   }
 
   function remove(contact) {
-    ensureDB();
-    return db.remove(contact);
+    return ensureDB().then(() => {
+      return db.remove(contact);
+    });
   }
 
   function getRevision() {
-    ensureDB();
-    return db.info().then(info => {
+    return ensureDB().then(() => {
+      return db.info();
+    }).then(info => {
       info = info || {update_sec: -1}
-      return Promise.resolve(info.update_seq);
+      return info.update_seq;
     });
   }
 
   function getCount() {
-    ensureDB();
-    return db.info().then(info => {
+    return ensureDB().then(() => {
+      return db.info();
+    }).then(info => {
       info = info || {doc_count: 0};
-      return Promise.resolve(info.doc_count);
+      return info.doc_count;
     });
   }
 
   function prefill() {
-    ensureDB();
-    var i = 0;
-    var promises = [];
-    while(i < 500) {
-      i++;
-      promises.push(save({
-        givenName: ['Wilson_' + i],
-        familyName: ['Page_' + i]
-      }));
-    }
+    return ensureDB().then(() => {
+      var i = 0;
+      var promises = [];
+      while(i < 500) {
+        i++;
+        promises.push(save({
+          givenName: ['Wilson_' + i],
+          familyName: ['Page_' + i]
+        }));
+      }
 
-    return Promise.all(promises);
+      return Promise.all(promises);
+    });
+  }
+
+  function resetDB(newDbName) {
+    var dbName;
+    return ensureDB().then(() => {
+      return db.info();
+    }).then((info) => {
+      dbName = info.db_name;
+      db = null;
+      return ensureDB(newDbName);
+    }).then(() => {
+      onChange(changeReason.RESET);
+      return dbName;
+    });
   }
 
   exports.mozContacts = EventDispatcher.mixin({
@@ -142,6 +179,7 @@
     getRevision,
     getCount,
     db,
-    prefill
+    prefill,
+    resetDB
   }, ['contactchange']);
 })(this);

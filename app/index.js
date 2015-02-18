@@ -61,5 +61,4 @@
       debug('Not registered: ' + e);
     });
   });
-
 })();

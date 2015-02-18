@@ -32,6 +32,7 @@ function onSaveClick() {
   // we don't have the time to implemente this. With future versions
   // of cache exposed to sharedworkers, we can do this on that 'server'
   // side.
+  
   RenderCache.evictList().then(() => {
     controller.save(data).then(function(contact) {
       debug('Contact saved successfully', data);

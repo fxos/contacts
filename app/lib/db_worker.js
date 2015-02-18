@@ -16,6 +16,7 @@ Server
   importScripts('/contacts/app/components/runtime-bridge/server.js');
 
   var bridges = {
+    chrome: new Server(contracts.chrome, { resetDB: resetDB }),
     edit: new Server(contracts.edit, { save: save }),
     list: new Server(contracts.list, { getAll: getAll }),
     details: new Server(contracts.detail, {
@@ -51,6 +52,10 @@ Server
 
   function removeContact(contact) {
     return mozContacts.remove(contact);
+  }
+
+  function resetDB(dbName) {
+    return mozContacts.resetDB(dbName);
   }
 
   mozContacts.addEventListener('contactchange', function(e) {

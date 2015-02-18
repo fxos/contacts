@@ -30,19 +30,11 @@ worker.onfetch = function(e) {
   var response = CacheWorker.match(e.request).then(function(response) {
     console.log('ServiceWorker: %s is in the cache', e.request.url);
     return response;
-  }).catch(function(e) {
-    // Unexpected error occurred
-    if (e) {
-      console.error(
-        'ServiceWorker: error occurred while matching %s', e.request.url, e
-      );
-      return Promise.reject(e);
-    }
-
+  }).catch(function() {
     // fetch(e.request) never resolves.
     // e.default() crashes the browser
     console.log('ServiceWorker: %s is NOT in the cache', e.request.url);
-    return new Response('');
+    return fetch(e.request);
   });
 
   e.respondWith(response);
