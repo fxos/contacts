@@ -111,3 +111,7 @@ var History = (function() {
   return rv;
 })();
 
+
+var w = new SharedWorker('lib/db_worker.js');
+w.postMessage('ping');
+

@@ -10,6 +10,6 @@ var ListContract = {
   },
 
   events: {
-    contactschanged: 'object'
+    contactschanged: []
   }
 };

@@ -24,9 +24,6 @@ window.addEventListener('load', function() {
 
   controller = new ContactListController();
   // Re-render content once contact list is updated
-  // TODO: This is very inefficient code, we should debounce this event handler
-  // since we can have tons of consequent events if we fetched several records
-  // during sync.
   controller.addEventListener('contactschanged', render);
   render();
 });

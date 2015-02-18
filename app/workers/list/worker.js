@@ -2,25 +2,34 @@
 
 importScripts('/contacts/app/components/runtime-bridge/client.js');
 importScripts('/contacts/app/components/runtime-bridge/server.js');
+importScripts('/contacts/app/lib/SharedWorker.js');
 
 importScripts('/contacts/app/lib/db_worker_contracts.js');
 var client = new Client(
   contracts.list,
-  new Worker('/contacts/app/lib/db_worker.js')
+  new SharedWorker('/contacts/app/lib/db_worker.js')
 );
 
-importScripts('/contacts/app/workers/list/contract.js');
-new Server(ListContract, {
-  getAll: getAll
+// There may be a lot of contacts changes in a row, so let's
+// try to batch them in the worker, and inform the ui only once.
+var aggregationTimeout = 0;
+client.addEventListener('contactchange', e => {;
+  clearTimeout(aggregationTimeout);
+  aggregationTimeout = setTimeout(function() {
+    server.broadcast('contactschanged');
+  }, 100);
 });
 
+importScripts('/contacts/app/workers/list/contract.js');
+var server = new Server(ListContract, {
+  getAll: getAll
+});
 
 function getAll() {
   return client.getAll().then(function(contacts) {
     var rv = '';
 
     contacts.forEach(function(contact) {
-      console.log('contact: ' + contact);
       rv += '<a ' +
             ' rel="next" ' +
             ' href="views/detail/index.html#/' + contact._id + '"' +
