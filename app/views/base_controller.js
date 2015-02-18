@@ -1,5 +1,4 @@
-/* global IPDLProtocol,
-          EventDispatcher,
+/* global EventDispatcher,
           AppConfig,
           syncManagerContract,
           Client
@@ -19,21 +18,27 @@
     );
 
     this.syncBridge.addEventListener('changesdetected', function(e) {
-      console.log('Sync (%s) detected changes.', e.data);
+      console.log(
+        'Sync (%s) detected changes.', e.data.dbRemoteEndpoint + e.data.dbName
+      );
     });
 
     this.syncBridge.addEventListener('syncsucceeded', function(e) {
-      console.log('Sync (%s) succeeded.', e.data);
+      console.log(
+        'Sync (%s) succeeded.', e.data.dbRemoteEndpoint + e.data.dbName
+      );
     });
 
-    this.syncBridge.addEventListener('syncfailed', function(data) {
-      console.log('Sync (%s) failed.', data);
+    this.syncBridge.addEventListener('syncfailed', function(e) {
+      console.log(
+        'Sync (%s) failed.', e.data.dbRemoteEndpoint + e.data.dbName
+      );
     });
 
     this._toggleSync = this._toggleSync.bind(this);
     document.addEventListener('visibilitychange', this._toggleSync);
 
-    // this._toggleSync();
+    this._toggleSync();
   };
 
   BaseController.prototype._toggleSync = function() {
