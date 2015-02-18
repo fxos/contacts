@@ -3,7 +3,7 @@
          onDomReady
 */
 
-var debug = 0 ? console.log.bind(console, '[LIST]') : function(){};
+var debug = 1 ? console.log.bind(console, '[LIST]') : function(){};
 var controller;
 
 var els = {
@@ -11,6 +11,10 @@ var els = {
 };
 
 function render() {
+  if (document.body.classList.contains('rendered')) {
+    console.log('Rendering saved content');
+    return;
+  }
   var frag = document.createDocumentFragment();
 
   controller.getAll().then(function(contacts) {
@@ -27,6 +31,10 @@ function render() {
     });
 
     els.list.appendChild(frag);
+    document.body.classList.add('rendered');
+    renderCache && renderCache.saveCurrent().then(() => {
+      debug('Content saved');
+    });
   });
 }
 
@@ -59,7 +67,10 @@ window.addEventListener('load', function() {
   // TODO: This is very inefficient code, we should debounce this event handler
   // since we can have tons of consequent events if we fetched several records
   // during sync.
-  controller.addEventListener('contactchange', render);
+  controller.addEventListener('contactchange', function() {
+    document.body.classList.remove('rendered');
+    render();
+  });
   render();
 });
 
