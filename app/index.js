@@ -52,7 +52,7 @@
       var theWorker = worker.installing || worker.waiting ||
                       worker.active;
       if (navigator.serviceWorker.controller) {
-        importScripts('/contacts/app/rendercache/api.js');
+        importScripts('/contacts/app/cache/render/api.js');
         //window.updateAPI = new UpdateAPI();
         //window.urlOverladingAPI = new UrlOverloadingAPI();
       }
