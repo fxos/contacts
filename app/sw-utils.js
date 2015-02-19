@@ -17,11 +17,11 @@ function debug(str) {
 // need to create a different url including the query parameters
 // information in the path.
 function normalizeUrl(url) {
-  if (url.indexOf('?') == -1) {
+  if (url.indexOf('#') == -1) {
     return url;
   }
 
-  return url.replace("?","/").replace("=", "/");
+  return url.replace("#", "/");
 };
 
 function ServiceWorker() {
