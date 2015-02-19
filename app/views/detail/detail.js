@@ -1,5 +1,6 @@
 /* global ContactDetailsController,
-          onDomReady
+          onDomReady,
+          RenderCache
 */
 
 (function() {
@@ -56,7 +57,7 @@ function render() {
     els.firstName.textContent = getContactName(activeContact);
     document.title = els.firstName.textContent;
     document.body.classList.add('rendered');
-    renderCache && renderCache.saveCurrent().then(() => {
+    RenderCache.saveCurrent().then(() => {
       debug('Content saved');
     });
   }, function() {

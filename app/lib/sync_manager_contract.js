@@ -4,14 +4,14 @@ var syncManagerContract = {
 
   methods: {
     startSync: {
-      args: ['string', 'string'],
+      args: ['string', 'string', 'number'],
       returns: undefined
     },
 
     stopSync: {
       args: ['string', 'string'],
       returns: undefined
-    },
+    }
   },
 
   events: {

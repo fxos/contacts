@@ -13,8 +13,6 @@
   importScripts('/contacts/app/api/pouchdb.js');
   importScripts('/contacts/app/app_config.js');
 
-  const DB_SYNC_INTERVAL = 2000;
-
   const bridge = new Server(syncManagerContract, {
     startSync: startSync,
     stopSync: stopSync
@@ -34,7 +32,7 @@
     }
   }
 
-  function startSync(dbName, dbRemoteEndpoint) {
+  function startSync(dbName, dbRemoteEndpoint, dbSyncInterval) {
     return new Promise((resolve, reject) => {
       try {
         ensureValidDBName(dbName);
@@ -45,8 +43,6 @@
           resolve();
           return;
         }
-
-        var syncInterval = DB_SYNC_INTERVAL;
 
         var syncHandle = null;
 
@@ -79,7 +75,7 @@
             });
             syncHandle = null;
           });
-        }, syncInterval));
+        }, dbSyncInterval));
 
         resolve();
       } catch(e) {

@@ -6,8 +6,13 @@
       put: {
         args: ['string', 'string', 'string']
       },
+
       evict: {
         args: ['string', 'string']
+      },
+
+      delete: {
+        args: ['string']
       }
     },
 

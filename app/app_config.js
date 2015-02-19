@@ -7,7 +7,14 @@
     databases: {
       contacts: {
         name: 'pouchcontacts',
-        remoteEndPoint: 'https://sms-cloud.iriscouch.com/'
+        remoteEndPoint: 'https://sms-cloud.iriscouch.com/',
+        syncInterval: 3000
+      },
+
+      customization: {
+        name: 'customisations',
+        remoteEndPoint: 'https://sms-cloud.iriscouch.com/',
+        syncInterval: 30000
       }
     }
   });

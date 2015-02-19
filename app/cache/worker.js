@@ -51,7 +51,6 @@
 
       return cacheWorker.put(url, content).then(function() {
         console.log('CacheWorker (%s): successfully saved %s.', cacheType, url);
-        cacheBridge.broadcast('saved');
       }).catch(function(e) {
         console.error(
           'CacheWorker (%s): failed to save %s.', cacheType, url, e
@@ -72,7 +71,7 @@
         return Promise.reject(new Error('Url should be defined'));
       }
 
-      return cacheWorker.put(url).then(function() {
+      return cacheWorker.evict(url).then(function() {
         console.log(
           'CacheWorker (%s): successfully evicted %s', cacheType, url
         );
@@ -80,6 +79,22 @@
         console.error(
           'CacheWorker (%s): failed to evict %s', cacheType, url
         );
+        return Promise.reject(e);
+      });
+    },
+
+    delete: function(cacheType) {
+      console.log('CacheWorker (%s): delete', cacheType);
+
+      var cacheWorker = CacheWorkers.get(cacheType);
+      if (!cacheWorker) {
+        return Promise.reject(new Error('Unsupported cache type'));
+      }
+
+      return cacheWorker.delete().then(function() {
+        console.log('CacheWorker (%s): successfully deleted', cacheType);
+      }).catch(function(e) {
+        console.error('CacheWorker (%s): failed to delete', cacheType);
         return Promise.reject(e);
       });
     }
