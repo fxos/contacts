@@ -1,18 +1,19 @@
 'use strict';
 
-/*global
-renderCacheContract,
-Client
+/* global CacheContract,
+          Client
 */
 
+const CACHE_TYPE = 'render-cache';
+
 function RenderCacheAPI(theWorker) {
-  this.bridge = new Client(renderCacheContract, theWorker);
+  this.bridge = new Client(CacheContract, theWorker);
   this.bridge.addEventListener('saved', this.onSaved.bind(this));
 }
 
 RenderCacheAPI.prototype.save = function(url, markup) {
   // debug('Sending save cache for ' + url);
-  return this.bridge.save(url, markup);
+  return this.bridge.put(CACHE_TYPE, url, markup);
 };
 
 // Utility method to save the current document
@@ -24,17 +25,17 @@ RenderCacheAPI.prototype.saveCurrent = function() {
 
 RenderCacheAPI.prototype.evict = function(url) {
   // debug('Sending evict cache for ' + url);
-  return this.bridge.evict(url);
+  return this.bridge.evict(CACHE_TYPE, url);
 };
 
 RenderCacheAPI.prototype.evictList = function() {
-  // XXX we shouldn't evit the contacts list always,
+  // XXX we shouldn't evict the contacts list always,
   // but so far we will rebuild each time we have a change
   var url = document.location.toString();
   url = url.substr(0, url.indexOf('/', 7)) +
    '/contacts/app/views/list/index.html';
   return this.evict(url);
-}
+};
 
 RenderCacheAPI.prototype.evictCurrent = function() {
   var url = document.location.toString();

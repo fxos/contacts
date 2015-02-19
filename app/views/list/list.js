@@ -59,7 +59,7 @@ function getContactName(contact) {
 
 window.addEventListener('load', function() {
   if (navigator.serviceWorker) {
-    importScripts('rendercache/api.js');
+    importScripts('cache/render/api.js');
   }
 
   controller = new ContactListController();
