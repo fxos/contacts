@@ -24,3 +24,19 @@ gaia-list {
   display: block;
   flex: 1;
 }
+
+#confirm footer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  text-align: center;
+}
+
+#confirm section {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
