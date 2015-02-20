@@ -11,8 +11,7 @@
 
   var ContactDetailsController = function () {
     BaseController.call(this, ['contactchange']);
-    var worker = new SharedWorker('lib/db_worker.js');
-    this.bridge = new Client(contracts.detail, worker);
+    this.bridge = new Client(contracts.detail);
     this.bridge.addEventListener('contactchange', e => this.onContactChange(e));
   };
 

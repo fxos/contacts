@@ -8398,6 +8398,9 @@ exports.hasLocalStorage = function () {
 };
 
 exports.hasBroadcastChannel = function () {
+  // XXX This leak for now!
+  return false;
+
   if (isChromeApp()) {
     return false;
   }

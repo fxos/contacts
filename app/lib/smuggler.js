@@ -1,6 +1,10 @@
 (function() {
   'use strict';
 
+  function debug(str) {
+    //console.log('[smuggler] ' + str);
+  };
+
   // TODO:
   // For the first iteration this code is going to live in the
   // main UI Thread.
@@ -20,69 +24,61 @@
   // TODO: Read the configuration from a file
   // This is the default configuration used for the app.
   // It describes in which type of environment the server will run.
-  // TODO: Find a nicer format
-  // For the same url it sounds like we always want it to run in 
-  // the same server.
-  // We likely want something like:
-  //  {
-  //    url: {
-  //      contracts: [],
-  //      type: Worker
-  //    }
-  //  }
-  // But this format does not fit perfectly with our registrations map.
   var config = {
-    'list': {
-      url: 'lib/db_worker.js',
-      type: SharedWorker
-    },
-
-    'detail': {
-      url: 'lib/db_worker.js',
-      type: SharedWorker
-    },
-
-    'edit': {
-      url: 'lib/db_worker.js',
-      type: SharedWorker
-    },
-
-    'sync-manager': {
-      url: 'lib/sync_manager_worker.js',
+    'lib/db_worker.js': {
+      contracts: ['list', 'detail', 'edit'],
       type: Worker
     },
 
-    'ListContract': {
-      url: 'workers/list/worker.js',
+    'lib/sync_manager_worker.js': {
+      contracts: ['sync-manager'],
       type: Worker
     },
 
-    'render-cache': {
-      url: 'sw.js',
-      type: ServiceWorker
+    'workers/list/worker.js': {
+      contracts: ['ListContract'],
+      type: Worker
+    },
+
+    'sw.js': {
+      contracts: ['render-cache'],
+      type: function() {
+        // TODO: This replicate the current state of thing in the
+        // prototype but for real the serviceWorker can be killed
+        // at any time, which makes it unclear that postMessage
+        // is an option here.
+        return navigator.serviceWorker ? navigator.serviceWorker.controller
+                                       : new Boolean(false);
+      }
     }
   };
 
   function getConfigForContract(contract) {
-    return config[contract.name] || null;
+    for (var url in config) {
+      if (config[url].contracts.indexOf(contract.name) != -1) {
+        return {
+          url: url,
+          type: config[url].type
+        }
+      }
+    }
+
+    return null;
   }
 
   var channel = new BroadcastChannel('smuggler');
   channel.onmessage = function(msg) {
-    switch (msg.data.type) {
+    switch (msg.data.name) {
       case 'Register':
-        register(msg.data.contract);
+        register(msg.data);
         break;
 
       case 'Unregister':
-        unregister(msg.data.contract);
+        unregister(msg.data);
         break;
     }
   };
 
-  // TODO: Should active be a boolean or a reference to the server ?
-  // I feel like it should be a instance of the server.
-  //
   // Registrations is a map of contracts, that has a list of clients
   // and who is the server.
   // It also contains the unique UUID used for the side-to-side
@@ -91,20 +87,21 @@
   // This is more or less something like:
   //  {
   //    contract: {
-  //      active: true,
+  //      server: server_instance,
   //      clients: [uuid1, uuid2, ...]
   //    }
   //  }
   //
-  // When the server is running the |active| state is set to true.
-  // If |active| then the smuggler does not see datas that are
+  // When the server is running the |server| state is set to the
+  // server instance.
+  // If |server| then the smuggler does not see datas that are
   // transferred.
-  // If |!active| then the smuggler receive the data, start the
+  // If |!server| then the smuggler receive the data, start the
   // server using the defined configuration, and forward the request
-  // before setting |active| to true and forget about the channel.
+  // before setting |server| to true and forget about the channel.
   // 
   // In some special cases we would like to intercept messages even
-  // if |active| is set to true.
+  // if |server| is set to true.
   // For example we may want to be able to inspect the data
   // that are exchange between the client and the server and rewrite
   // them on the fly for debugging purpose.
@@ -116,50 +113,73 @@
   //
   var registrations = new Map();
 
-  function registerContract(contract) {
-    if (registrations.has(contract)) {
+  // Based on the configuration there could be multiple contracts
+  // served by one end point. So if a server instance has already
+  // started for a contract that is part of a group, let's return
+  // this instance.
+  function getInstanceForContract(name) {
+    for (var url in config) {
+      var contracts = config[url].contracts;
+      if (contracts.indexOf(name) === -1) {
+        continue;
+      }
+
+      for (var i = 0; i < contracts.length; i++) {
+        if (!registrations.has(contracts[i])) {
+          continue;
+        }
+
+        return registrations.get(contracts[i]).server;
+      };
+    }
+
+    return null;
+  }
+
+  function registerContract(name) {
+    if (registrations.has(name)) {
       return;
     }
 
     var registration = {
-      active: false,
+      server: getInstanceForContract(name),
       clients: []
     };
 
-    registrations.set(contract, registration);
+    registrations.set(name, registration);
   }
 
   function registerClientForContract(uuid, contract) {
-    registerContract(contract);
+    registerContract(contract.name);
 
-    var registration = registrations.get(contract);
+    var registration = registrations.get(contract.name);
     registration.clients.push(uuid);
   }
 
   function hasClientsForContract(contract) {
-    var registration = registrations.get(contract);
+    var registration = registrations.get(contract.name);
     return !!registration.clients.length;
   }
 
   function getClientsForContract(contract) {
-    var registration = registrations.get(contract);
+    var registration = registrations.get(contract.name);
     return registration.clients;
   }
 
   function registerServerForContract(server, contract) {
-    registerContract(contract);
+    registerContract(contract.name);
 
-    var registration = registrations.get(contract);
+    var registration = registrations.get(contract.name);
     registration.server = server;
   }
 
   function hasServerForContract(contract) {
-    var registration = registrations.get(contract);
+    var registration = registrations.get(contract.name);
     return !!registration.server;
   }
 
   function getServerForContract(contract) {
-    var registration = registrations.get(contract);
+    var registration = registrations.get(contract.name);
     return registration.server;
   }
 
@@ -176,17 +196,19 @@
     if (!registration) {
       throw new Error(kEmptyRegistration);
     }
-    console.log('Someone is trying to register: ' + registration);
 
     var contract = registration.contract;
     if (!contract) {
       throw new Error(kEmptyContract);
     }
-    console.log('Someone is trying to register a contract: ' + contract);
 
     switch (registration.type) {
       case 'client':
         registerClientForContract(registration.uuid, contract);
+        registerServerForContract(
+          getInstanceForContract(contract.name),
+          contract
+        );
 
         // TODO: Lazily start the server.
         // The server does not need to run if the client is not trying
@@ -196,11 +218,20 @@
         // dropping its own reference to the communication channel.
         // But for now we are lazy and start the server as soon the client
         // is connected.
+
         if (!hasServerForContract(contract)) {
           var config = getConfigForContract(contract)
           var server = new config.type(config.url);
+
+          // TODO: If the server is supposed to be hosted by a serviceWorker
+          // that is not running, then we don't support lazy restart here.
+          if (server == false) {
+            return;
+          }
+
           registerServerForContract(server, contract);
         }
+
 
         if (hasServerForContract(contract)) {
           var server = getServerForContract(contract);
@@ -208,9 +239,6 @@
           // do better.
           server.postMessage(registration.uuid);
         }
-
-        // TODO: Returns something to the client, so it knows that
-        // the server is ready and aware of it before sending data!
         break;
 
       case 'server':
@@ -233,7 +261,32 @@
   };
 
   function unregister(registration) {
-    console.log('Someone is trying to unregister: ' + registration);
+    debug('Someone is trying to unregister: ' + registration);
   };
 
-});
+  document.addEventListener('visibilitychange', function killer() {
+    if (!document.hidden) {
+      return;
+    }
+
+    // TODO: It works, but we need a disconnected event for servers,
+    // so the client can requeue all its messages until the connection
+    // is reactivated.
+    registrations.forEach(function(registration) {
+      registration.clients.forEach(function(uuid) {
+        var channel = new BroadcastChannel(uuid);
+        channel.postMessage('die');
+        channel.close();
+      });
+
+      registration.clients = [];
+
+      setTimeout(function() {
+        registration.server && registration.server.terminate();
+        registration.server = null;
+      }, 1000);
+    });
+  });
+
+})();
+

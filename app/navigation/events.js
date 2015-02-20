@@ -64,3 +64,24 @@ var observer = new MutationObserver(function(mutations) {
 });
 observer.observe(target, { attributes: true });
 
+
+addEventListener('visibilitychange', function() {
+  var views = document.querySelectorAll('iframe.back');
+  if (document.hidden) {
+    for (var i = 0; i < views.length; i++) {
+      var oldView = views[i];
+      var newView = document.createElement('iframe');
+      newView.className = oldView.className;
+      newView.dataset.content = oldView.dataset.content;
+      newView.dataset.title = oldView.dataset.title;
+      newView.oldSrc = oldView.src;
+      oldView.parentNode.replaceChild(newView, oldView);
+    }
+  } else {
+    for (var i = 0; i < views.length; i++) {
+      var view = views[i];
+      view.src = view.oldSrc;
+      delete view.oldSrc;
+    }
+  }
+});

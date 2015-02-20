@@ -2,13 +2,9 @@
 
 importScripts('/contacts/app/components/runtime-bridge/client.js');
 importScripts('/contacts/app/components/runtime-bridge/server.js');
-importScripts('/contacts/app/lib/SharedWorker.js');
 
 importScripts('/contacts/app/lib/db_worker_contracts.js');
-var client = new Client(
-  contracts.list,
-  new SharedWorker('/contacts/app/lib/db_worker.js')
-);
+var client = new Client(contracts.list);
 
 // There may be a lot of contacts changes in a row, so let's
 // try to batch them in the worker, and inform the ui only once.

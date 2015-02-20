@@ -24,15 +24,6 @@ Server
     })
   };
 
-  var channel = new BroadcastChannel('this_is_so_hacky');
-  channel.onmessage = function(e) {
-    var data = e.data;
-    data.port = channel;
-    bridges.list.onmessage(data);
-  };
-
-  bridges.list.ports.push(channel);
-
   function getAll() {
     return mozContacts.getAll();
   }

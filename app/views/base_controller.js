@@ -13,10 +13,7 @@
   var BaseController = function(allowedEvents) {
     EventDispatcher.mixin(this, allowedEvents);
 
-    this.syncBridge = new Client(
-      syncManagerContract,
-      new SharedWorker('lib/sync_manager_worker.js')
-    );
+    this.syncBridge = new Client(syncManagerContract);
 
     this.syncBridge.addEventListener('changesdetected', function(e) {
       console.log('Sync (%s) detected changes.', e.data);

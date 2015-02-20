@@ -12,10 +12,7 @@
   var ContactListController = function () {
     BaseController.call(this, ['contactschanged']);
 
-    this.bridge = new Client(ListContract,
-      new Worker('workers/list/worker.js')
-    );
-
+    this.bridge = new Client(ListContract);
     this.bridge.addEventListener('contactschanged', e => this.onContactChange(e));
   };
 

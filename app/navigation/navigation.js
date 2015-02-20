@@ -10,12 +10,15 @@ var History = (function() {
   // XXX
   // It would be nice if 'view' can be a Web Component instead, so all the
   // client side of view will be hidden.
-  var views = 
-    Array.prototype.slice.call(document.querySelectorAll('iframe', 0));
+  var views = [];
 
+  addEventListener('visibilitychange', initializeViews);
   initializeViews();
 
   function initializeViews() {
+    views =
+      Array.prototype.slice.call(document.querySelectorAll('iframe', 0));
+
     views.forEach(function(view) {
       attachListenersToView(view);
     });
@@ -110,8 +113,4 @@ var History = (function() {
 
   return rv;
 })();
-
-
-var w = new SharedWorker('lib/db_worker.js');
-w.postMessage('ping');
 

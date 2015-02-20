@@ -11,8 +11,7 @@
 
   var ContactEditController = function () {
     BaseController.call(this);
-    var worker = new SharedWorker('lib/db_worker.js');
-    this.bridge = new Client(contracts.edit, worker);
+    this.bridge = new Client(contracts.edit);
   };
 
   ContactEditController.prototype = Object.create(BaseController.prototype);

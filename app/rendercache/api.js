@@ -5,8 +5,8 @@ renderCacheContract,
 Client
 */
 
-function RenderCacheAPI(theWorker) {
-  this.bridge = new Client(renderCacheContract, theWorker);
+function RenderCacheAPI() {
+  this.bridge = new Client(renderCacheContract);
   this.bridge.addEventListener('saved', this.onSaved.bind(this));
 }
 
@@ -36,8 +36,4 @@ RenderCacheAPI.prototype.onSaved = function() {
   // debug('Cache saved for ' + args.url);
 };
 
-var worker = navigator.serviceWorker ? navigator.serviceWorker.controller
-                                     : null;
-if (worker) {
-  window.renderCache = new RenderCacheAPI(worker);
-}
+window.renderCache = new RenderCacheAPI();
