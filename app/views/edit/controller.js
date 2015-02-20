@@ -10,7 +10,7 @@
   'use strict';
 
   var ContactEditController = function () {
-    BaseController.call(this);
+    BaseController.call(this, ['customizationavailable']);
     var worker = new SharedWorker('lib/db_worker.js');
     this.bridge = new Client(contracts.edit, worker);
   };

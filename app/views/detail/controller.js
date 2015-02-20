@@ -10,7 +10,7 @@
   'use strict';
 
   var ContactDetailsController = function () {
-    BaseController.call(this, ['contactchange']);
+    BaseController.call(this, ['contactchange', 'customizationavailable']);
     var worker = new SharedWorker('lib/db_worker.js');
     this.bridge = new Client(contracts.detail, worker);
     this.bridge.addEventListener('contactchange', e => this.onContactChange(e));

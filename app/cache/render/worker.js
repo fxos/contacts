@@ -37,6 +37,10 @@
         // Reject if nothing found in the cache
         return response ? response : Promise.reject();
       });
+    },
+
+    delete: function() {
+      return caches.delete(this.cacheName);
     }
   };
 })(self);

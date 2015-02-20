@@ -1,7 +1,9 @@
 /* global EventDispatcher,
           AppConfig,
           syncManagerContract,
-          Client
+          CustomizationWorkerContract,
+          Client,
+          Promise
 */
 
 /* exported BaseController */
@@ -12,6 +14,16 @@
   var BaseController = function(allowedEvents) {
     EventDispatcher.mixin(this, allowedEvents);
 
+    this._initSyncBridge();
+    this._initCustomizationBridge();
+
+    this._toggleSync = this._toggleSync.bind(this);
+    document.addEventListener('visibilitychange', this._toggleSync);
+
+    this._toggleSync();
+  };
+
+  BaseController.prototype._initSyncBridge = function() {
     this.syncBridge = new Client(
       syncManagerContract,
       new SharedWorker('lib/sync_manager_worker.js')
@@ -23,35 +35,35 @@
       );
     });
 
-    this.syncBridge.addEventListener('syncsucceeded', function(e) {
-      console.log(
-        'Sync (%s) succeeded.', e.data.dbRemoteEndpoint + e.data.dbName
-      );
-    });
-
     this.syncBridge.addEventListener('syncfailed', function(e) {
       console.log(
         'Sync (%s) failed.', e.data.dbRemoteEndpoint + e.data.dbName
       );
     });
+  };
 
-    this._toggleSync = this._toggleSync.bind(this);
-    document.addEventListener('visibilitychange', this._toggleSync);
+  BaseController.prototype._initCustomizationBridge = function() {
+    this.customizationBridge = new Client(
+      CustomizationWorkerContract,
+      new SharedWorker('lib/customization_worker.js')
+    );
 
-    this._toggleSync();
+    this.customizationBridge.addEventListener('customizationavailable', (e) => {
+      this.dispatchEvent('customizationavailable', e.data);
+    });
   };
 
   BaseController.prototype._toggleSync = function() {
     if (document.hidden) {
-      this.syncBridge.stopSync(
-        AppConfig.databases.contacts.name,
-        AppConfig.databases.contacts.remoteEndPoint
-      );
+      Object.keys(AppConfig.databases).forEach(function(dbKey) {
+        var db = AppConfig.databases[dbKey];
+        this.syncBridge.stopSync(db.name, db.remoteEndPoint);
+      }, this);
     } else {
-      this.syncBridge.startSync(
-        AppConfig.databases.contacts.name,
-        AppConfig.databases.contacts.remoteEndPoint
-      );
+      Object.keys(AppConfig.databases).forEach(function(dbKey) {
+        var db = AppConfig.databases[dbKey];
+        this.syncBridge.startSync(db.name, db.remoteEndPoint, db.syncInterval);
+      }, this);
     }
   };
 
@@ -63,17 +75,17 @@
         <p>Description: ${patchDescriptor.description}</p>
         <p>Author: ${patchDescriptor.author}</p>
       `;
-      var action1 = {'label': 'Apply', callback: () => {
+      var action1 = {'label': 'Apply', callback: function() {
         resolve();
         this.confirm.close();
-      }};
-      var action2 = {'label': 'Cancel', callback: () => {
+      }.bind(this)};
+      var action2 = {'label': 'Cancel', callback: function() {
         reject();
         this.confirm.close();
-      }};
+      }.bind(this)};
       this._getConfirm(body, action1, action2).open();
     });
-  }
+  };
 
   BaseController.prototype._getConfirm = function(body, action1, action2) {
     function updateConfirm() {

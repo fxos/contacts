@@ -9,6 +9,17 @@
 (function(exports) {
   'use strict';
 
+  function guessMimeType(url) {
+    switch (url.slice(url.lastIndexOf('.') + 1)) {
+      case 'css':
+        return 'text/css';
+      case 'js':
+        return 'application/javascript';
+      default:
+        return 'text/html';
+    }
+  }
+
   exports.CustomizationCacheWorker = {
     get cacheName() {
       return 'customization-cache-v0';
@@ -19,7 +30,7 @@
       return caches.open(this.cacheName).then(function(cache) {
         return cache.put(normalizeUrl(url), new Response(content, {
           headers: {
-            'Content-Type': 'text/html'
+            'Content-Type': guessMimeType(url)
           }
         }));
       });
@@ -38,6 +49,10 @@
         // Reject if nothing found in the cache
         return response ? response : Promise.reject();
       });
+    },
+
+    delete: function() {
+      return caches.delete(this.cacheName);
     }
   };
 })(self);
