@@ -1,6 +1,6 @@
 (function(exports) {
 
-var debug = 1 ? console.log.bind(console, '[client]') : function() {};
+var debug = 0 ? console.log.bind(console, '[client]') : function() {};
 
 const MESSAGE_TYPES = [
   'response',

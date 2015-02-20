@@ -1,6 +1,6 @@
 (function(exports) {
 
-var debug = 1 ? console.log.bind(console, '[server]') : function() {};
+var debug = 0 ? console.log.bind(console, '[server]') : function() {};
 
 /**
  * exports
