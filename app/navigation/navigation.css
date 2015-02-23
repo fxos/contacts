@@ -48,3 +48,38 @@ iframe.back {
   outline-offset: -1rem;
 }
 
+/* Footer */
+
+#footer {
+  position:fixed;
+  left:0px;
+  bottom:0px;
+  width:100%;
+  background:#2C393B;
+}
+
+.avatar {
+  float: left;
+  margin-left: 1rem;
+  position: relative;
+
+  height: 4rem;
+  width: 4rem;
+
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+
+  -moz-box-shadow: 0 0 0 3px #fff, 0 0 0 4px #999, 0 2px 5px 4px rgba(0,0,0,.2);
+  box-shadow: 0 0 0 3px #fff, 0 0 0 4px #999, 0 2px 5px 4px rgba(0,0,0,.2);
+}
+
+.email {
+  float: left;
+  margin: 1rem;
+  font-size: 20px;
+  color: white;
+}
+
+.hide {
+  display: none;
+}

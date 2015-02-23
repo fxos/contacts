@@ -1,5 +1,16 @@
 
 var contracts = {
+  chrome: {
+    name: 'chrome',
+
+    methods: {
+      resetDB: {
+        args: ['string'],
+        returns: 'string'
+      }
+    }
+  },
+
   list: {
     name: 'list',
 

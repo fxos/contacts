@@ -33,12 +33,18 @@ var observer = new MutationObserver(function(mutations) {
 });
 observer.observe(target, { childList: true });
 
+var fixedActions = {
+  'fxa': function() {}
+};
+
 var target = document.querySelector('head > meta[name=action]');
 var observer = new MutationObserver(function(mutations) {
   mutations.forEach(function(mutation) {
     var actions = header.querySelectorAll('a,button');
     for (var i = 0; i < actions.length; i++) {
-      header.removeChild(actions[i]);
+      if (!fixedActions[actions[i].id]) {
+        header.removeChild(actions[i]);
+      }
     }
 
     var icon = null;
@@ -63,4 +69,3 @@ var observer = new MutationObserver(function(mutations) {
   });
 });
 observer.observe(target, { attributes: true });
-

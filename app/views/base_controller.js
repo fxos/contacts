@@ -29,6 +29,11 @@
       new SharedWorker('lib/sync_manager_worker.js')
     );
 
+    this.dbBridge = new Client(
+      contracts.chrome,
+      new SharedWorker('lib/db_worker.js')
+    );
+
     this.syncBridge.addEventListener('changesdetected', function(e) {
       console.log(
         'Sync (%s) detected changes.', e.data.dbRemoteEndpoint + e.data.dbName
@@ -51,20 +56,51 @@
     this.customizationBridge.addEventListener('customizationavailable', (e) => {
       this.dispatchEvent('customizationavailable', e.data);
     });
+
+    if (parent.Accounts) {
+      parent.Accounts.addEventListener('login', this._reset.bind(this));
+      parent.Accounts.addEventListener('logout', this._reset.bind(this));
+    }
   };
 
   BaseController.prototype._toggleSync = function() {
-    if (document.hidden) {
+    var ProfileStorage = parent.ProfileStorage || {
+      get: function() {
+        return new Promise((resolve, reject) => {
+          resolve(null);
+        });
+      }
+    };
+
+    ProfileStorage.get().then((profile) => {
       Object.keys(AppConfig.databases).forEach(function(dbKey) {
         var db = AppConfig.databases[dbKey];
-        this.syncBridge.stopSync(db.name, db.remoteEndPoint);
+
+        var dbName = db.name;
+        if (profile && profile.user) {
+          dbName = profile.user;
+        }
+
+        if (document.hidden) {
+            this.syncBridge.stopSync(dbName, db.remoteEndPoint);
+        } else {
+            this.syncBridge.startSync(dbName,
+                                      db.remoteEndPoint,
+                                      db.syncInterval);
+        }
       }, this);
-    } else {
-      Object.keys(AppConfig.databases).forEach(function(dbKey) {
-        var db = AppConfig.databases[dbKey];
-        this.syncBridge.startSync(db.name, db.remoteEndPoint, db.syncInterval);
-      }, this);
-    }
+    });
+  };
+
+  BaseController.prototype._reset = function(profile) {
+    var dbRemoteEndpoint = AppConfig.databases.contacts.remoteEndPoint;
+
+    var user = (profile && profile.user) ? profile.user : '';
+    this.dbBridge.resetDB(user).then((resetedDb) => {
+      this.syncBridge.stopSync(resetedDb, dbRemoteEndpoint).then(() => {
+        this._toggleSync();
+      });
+    });
   };
 
   BaseController.prototype.shouldApplyPatch = function(patchDescriptor) {

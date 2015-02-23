@@ -1,4 +1,4 @@
-/*global Map, Set */
+/* global Map, Set */
 
 /* exported EventDispatcher */
 
